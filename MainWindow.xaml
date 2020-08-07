@@ -1,0 +1,12 @@
+﻿<Window x:Name="Voice_Coding" x:Class="Voice_Coding.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Voice_Coding"
+        mc:Ignorable="d"
+        Title="Voice Coding" Height="100" Width="100" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Visibility="Hidden" WindowStyle="None">
+    <Grid>
+        
+    </Grid>
+</Window>
