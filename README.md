@@ -8,10 +8,10 @@ It will automaticaly start listening so open up any text editor like Notepad etc
 # Commands only for c++
 | Command  | Description |
 | ------------- | ------------- |
-| include <file name>  | ex. inclued  iostream |
-| function <data type> <name>  | ex. function void main  |
-| printf <string/variable> <data> | ex. printf string Something string |
-| printline <string/variable> <data> | ex. printline variable num |
+| include <file name>  | ex. say: "inclued  iostream" |
+| function <data type> <name>  | ex. say: "function void main"  |
+| printf <string/variable> <data> | ex. say: "printf string Something string" |
+| printline <string/variable> <data> | ex. say: "printline variable num" |
 | hello | Check listening |
 | up, down, left, right | Move cursor according command |
 | newline | Similar to press ENTER key in keybord |
