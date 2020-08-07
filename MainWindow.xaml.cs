@@ -72,7 +72,7 @@ namespace Voice_Coding
 
             m_notifyIcon = new System.Windows.Forms.NotifyIcon();
             m_notifyIcon.Text = "Voice Coding";
-            m_notifyIcon.Icon = new System.Drawing.Icon("Application_icon.ico");
+            m_notifyIcon.Icon = new System.Drawing.Icon("VoiceCoding_tray.ico");
             m_notifyIcon.Click += new EventHandler(m_notifyIcon_Click);
             m_notifyIcon.ContextMenu = contextMenu1;
             
