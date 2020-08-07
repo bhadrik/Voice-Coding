@@ -313,6 +313,7 @@ namespace Voice_Coding
                 case "exit":
                     //System.Windows.Application.Current.Shutdown();
                     sim.Keyboard.TextEntry("You said exit");
+                    m_notifyIcon.Dispose();
                     this.Close();
                     break;
 
