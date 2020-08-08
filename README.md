@@ -1,9 +1,9 @@
 # Voice-Coding
- Voice Code is project about writing code using voice. It uses voice commands to write perticular line of code. It is a simple background service that Continuously take voice input from user and write appropriate code into the editor currently selected. It makes programming easy to write and incrise the production speed. 😃
+It uses voice commands to write a particular line or block of code. It is a simple background service that Continuously takes voice input from the user and writes appropriate code into the editor currently selected. It makes programming easy to write and increase production speed. 😃
 
 # How to use
-Open up the project in Visual Studio then build & run it.
-It will automaticaly start listening so open up any text editor like Notepad etc. now use following commands(speak command).
+Open up the project in Visual Studio, then build & run it.
+It will automatically start listening so open up any text editor like Notepad etc. now use following commands(speak command).
 
 # Commands only for c++
 | Command  | Description |
