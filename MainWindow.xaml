@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Voice_Coding"
         mc:Ignorable="d"
-        Title="Voice Coding" Height="100" Width="100" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Visibility="Hidden" WindowStyle="None">
+        
+        Title="Voice Coding" Closing="onWindowClose" Height="100" Width="100" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Visibility="Hidden" WindowStyle="None">
     <Grid>
         
     </Grid>
