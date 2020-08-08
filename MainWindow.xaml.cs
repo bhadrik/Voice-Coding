@@ -11,10 +11,7 @@ using System.Windows.Forms;
 using System.Net.NetworkInformation;
 using System.Windows.Input;
 using System.Drawing;
-using System.Runtime.CompilerServices;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
 
 namespace Voice_Coding
 {
@@ -27,10 +24,10 @@ namespace Voice_Coding
         private SpeechRecognitionEngine rec = new SpeechRecognitionEngine(new CultureInfo("en-US"));
 
         //Tray icon
-        private NotifyIcon m_notifyIcon;
+        private NotifyIcon notifyIcon;
         private ContextMenu contextMenu1;
         private MenuItem menuItem1;
-        private IContainer components;
+        //private IContainer components;
 
 
         //Choices for differet grammar
@@ -60,7 +57,7 @@ namespace Voice_Coding
         {
             InitializeComponent();
             
-            components = new System.ComponentModel.Container();
+            //components = new System.ComponentModel.Container();
             contextMenu1 = new System.Windows.Forms.ContextMenu();
             menuItem1 = new System.Windows.Forms.MenuItem();
 
@@ -70,13 +67,14 @@ namespace Voice_Coding
             menuItem1.Text = "Exit";
             menuItem1.Click += new EventHandler(exit_Click);
 
-            m_notifyIcon = new System.Windows.Forms.NotifyIcon();
-            m_notifyIcon.Text = "Voice Coding";
-            m_notifyIcon.Icon = new System.Drawing.Icon("VoiceCoding_tray.ico");
-            m_notifyIcon.Click += new EventHandler(m_notifyIcon_Click);
-            m_notifyIcon.ContextMenu = contextMenu1;
+            notifyIcon = new System.Windows.Forms.NotifyIcon();
+            notifyIcon.Text = "Voice Coding";
+            notifyIcon.Icon = new System.Drawing.Icon("icon_tray_light.ico");
+            notifyIcon.Click += new EventHandler(notifyIcon_Click);
+            notifyIcon.ContextMenu = contextMenu1;
             
-            if(!m_notifyIcon.Visible) m_notifyIcon.Visible = true;
+            if(!notifyIcon.Visible) notifyIcon.Visible = true;
+
 
             //grammar generation
             includeBuilder.Append("include");
@@ -134,9 +132,10 @@ namespace Voice_Coding
 
 
 
+
         // NOTIFIER  -----------------------------------------------------
 
-        void m_notifyIcon_Click(object sender, EventArgs e)
+        void notifyIcon_Click(object sender, EventArgs e)
         {
             if (recognizing)
             {
@@ -152,7 +151,7 @@ namespace Voice_Coding
 
         private void exit_Click(object sender, EventArgs e)
         {
-            m_notifyIcon.Dispose();
+            notifyIcon.Dispose();
             this.Close();
         }
 
@@ -313,7 +312,7 @@ namespace Voice_Coding
                 case "exit":
                     //System.Windows.Application.Current.Shutdown();
                     sim.Keyboard.TextEntry("You said exit");
-                    m_notifyIcon.Dispose();
+                    notifyIcon.Dispose();
                     this.Close();
                     break;
 
@@ -331,8 +330,13 @@ namespace Voice_Coding
 
         private void rec_Completed(object sender, RecognizeCompletedEventArgs e)
         {
+            //In multiple mode, raised when async recognition is canceled 
             Console.WriteLine("----------------------------");
         }
 
+        private void onWindowClose(object sender, CancelEventArgs e)
+        {
+            notifyIcon.Dispose();
+        }
     }
 }
