@@ -6,8 +6,14 @@
         xmlns:local="clr-namespace:Voice_Coding"
         mc:Ignorable="d"
         
-        Title="Voice Coding" Closing="onWindowClose" Height="100" Width="100" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Visibility="Hidden" WindowStyle="None">
+        Title="MainWindow" Height="100" Width="200" ResizeMode="NoResize" WindowStyle="None" Background="#FF9A9A9A" Closing="OnMainWindowClose" WindowStartupLocation="Manual" Left="0" Top="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="Hidden" ShowInTaskbar="False">
     <Grid>
-        
+        <ComboBox x:Name="LanguageSelect" HorizontalAlignment="Left" Margin="12,39,0,0" VerticalAlignment="Top" Width="176" Grid.ColumnSpan="2">
+            <ComboBoxItem Content="CPP" IsSelected="True"></ComboBoxItem>
+            <ComboBoxItem Content="C" IsSelected="False"></ComboBoxItem>
+            <ComboBoxItem Content="C#" IsSelected="False"></ComboBoxItem>
+        </ComboBox> 
+        <Button x:Name="TitleBar" Content="Voice Coding" HorizontalAlignment="Left" Margin="0,-1,-1,0" VerticalAlignment="Top" Width="200" Height="30" HorizontalContentAlignment="Left" Padding="10 0 0 0" Background="#FF313131" Foreground="#FFE0E0E0" MouseLeftButtonDown="OnDrag"/>
+        <Button x:Name="CloseBtn" Content="X" HorizontalAlignment="Left" Margin="170,4,0,0" VerticalAlignment="Top" Width="20" Height="20" Background="#FFD14949" Foreground="#FFD7D7D7" BorderBrush="#FFA6A6A6" Click="HideToTray"/>
     </Grid>
 </Window>
