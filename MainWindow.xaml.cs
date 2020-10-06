@@ -10,7 +10,7 @@ namespace Voice_Coding
     {
         int level = 0;
         //Recognizer objects
-        private CodeRecognition rec = new CodeRecognition();
+        private readonly CodeRecognition rec = new CodeRecognition();
 
         //Tray icon
         private NotifyIcon notifyIcon;
@@ -39,6 +39,7 @@ namespace Voice_Coding
 
             rec.startRecognition();
             rec.ExitEvent += new EventHandler(ExitApp);
+            SetWindowToBottomRightOfScreen();
         }
 
         public void NotifyIcon_Click(object source, EventArgs e)
@@ -68,10 +69,10 @@ namespace Voice_Coding
             notifyIcon.Dispose();
         }
 
-        private void OnDrag(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void SetWindowToBottomRightOfScreen()
         {
-            //base.OnMouseLeftButtonDown(e);
-            this.DragMove();
+            Left = SystemParameters.WorkArea.Width - Width - 10;
+            Top = SystemParameters.WorkArea.Height - Height - 10;
         }
 
         private void HideToTray(object sender, EventArgs e)

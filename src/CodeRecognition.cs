@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Speech.Recognition;
-using System.Windows.Forms;
-using System.Windows.Media;
 using WindowsInput;
 using WindowsInput.Native;
 
