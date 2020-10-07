@@ -265,8 +265,8 @@ namespace Voice_Coding.src
 
         private void OnToggle(object src, RoutedEventArgs e)
         {
-            if (recognising) { rec.RecognizeAsyncCancel(); recognising = false; }
-            else { rec.RecognizeAsync(RecognizeMode.Multiple); recognising = true; }
+            if (recognising) { rec.RecognizeAsyncCancel(); recognising = false; statusBar.status.Content = "PAUSE";  }
+            else { rec.RecognizeAsync(RecognizeMode.Multiple); recognising = true; statusBar.status.Content = "STARTED"; }
             statusBar.toggleColor(recognising);
         }
 

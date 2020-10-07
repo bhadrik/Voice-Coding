@@ -16,6 +16,7 @@ namespace Voice_Coding
         private readonly NotifyIcon notifyIcon;
         private readonly ContextMenu menu;
         private readonly MenuItem exit_Item;
+        private readonly MenuItem settings;
 
         public MainWindow()
         {
@@ -23,12 +24,17 @@ namespace Voice_Coding
 
             rec = new CodeRecognition();
 
-            menu = new System.Windows.Forms.ContextMenu();
-            exit_Item = new System.Windows.Forms.MenuItem();
+            menu = new ContextMenu();
+            exit_Item = new MenuItem();
+            settings = new MenuItem();
 
-            menu.MenuItems.AddRange(new MenuItem[] { exit_Item });
+            menu.MenuItems.AddRange(new MenuItem[] { exit_Item, settings });
 
-            exit_Item.Index = 0;
+            settings.Index = 0;
+            settings.Text = "Settings";
+            settings.Click += new EventHandler(OpenSettingsMenu);
+
+            exit_Item.Index = settings.Index + 1;
             exit_Item.Text = "Exit";
             exit_Item.Click += new EventHandler(ExitApp);
 
@@ -41,13 +47,24 @@ namespace Voice_Coding
             rec.startRecognition();
             rec.ExitEvent += new EventHandler(ExitApp);
             SetWindowToBottomRightOfScreen();
+
+            this.Closing += new CancelEventHandler(ClosingWindow);
+        }
+
+        private void ClosingWindow(object sender, CancelEventArgs e)
+        {
+            notifyIcon.Dispose();
+            rec.Close();
         }
 
         private void ExitApp(object sender, EventArgs e)
         {
-            notifyIcon.Dispose();
-            rec.Close();
             this.Close();
+        }
+
+        private void OpenSettingsMenu(object sender, EventArgs e)
+        {
+            this.Show();
         }
 
         private void SetWindowToBottomRightOfScreen()
