@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Speech.Recognition;
+using System.Windows;
 using WindowsInput;
 using WindowsInput.Native;
 
@@ -14,12 +15,15 @@ namespace Voice_Coding.src
         int level = 0;
 
         public event EventHandler ExitEvent;
+        public event EventHandler<AudioLevelUpdatedEventArgs> AudioUpdate;
 
         //Recognizer objects
         private SpeechRecognitionEngine rec;
 
         //To simulat keybord & mouse input
         private InputSimulator sim;
+
+        private StatusBar statusBar;
 
         public CodeRecognition()
         {
@@ -44,6 +48,8 @@ namespace Voice_Coding.src
                 new EventHandler<SpeechDetectedEventArgs>(Rec_Detected);
             rec.RecognizeCompleted +=
                 new EventHandler<RecognizeCompletedEventArgs>(Rec_Completed);
+            rec.AudioLevelUpdated +=
+                new EventHandler<AudioLevelUpdatedEventArgs>(Rec_AudioUpdate);
 
             //INPUT Simpulation
             /*
@@ -59,6 +65,10 @@ namespace Voice_Coding.src
             rec.EmulateRecognizeAsync("function int recognized");
             Thread.Sleep(500);
             */
+
+            statusBar = new StatusBar();
+            statusBar.Show();
+            statusBar.toggleRecogniton += new EventHandler < RoutedEventArgs > (OnToggle);
         }
 
         private void Rec_Recognised(object sender, SpeechRecognizedEventArgs e)
@@ -68,6 +78,7 @@ namespace Voice_Coding.src
             RecognizedWordUnit firstWord = e.Result.Words.First();
 
             Console.Write("CMD: " + firstWord.Text);
+            statusBar.changeText(e.Result.Text);
 
             switch (firstWord.Text)
             {
@@ -131,7 +142,10 @@ namespace Voice_Coding.src
                 // PRINTLINE  STRING/VAR "data_to_be_printed"
                 case "printline":
                     tempWord = e.Result.Words.ElementAt(1);
+
                     Console.Write(" " + tempWord.Text);
+                    statusBar.changeText(tempWord.Text);
+
                     sim.Keyboard.TextEntry("cout<<<<endl;");
                     for (int i = 0; i < 7; i++) sim.Keyboard.KeyPress(VirtualKeyCode.LEFT);
 
@@ -220,29 +234,9 @@ namespace Voice_Coding.src
 
                 default:
                     sim.Keyboard.TextEntry(e.Result.Text);
-                    Console.WriteLine("Default\n");
+                    //Console.WriteLine("Default\n");
                     break;
             }
-        }
-
-        public void startRecognition()
-        {
-            //Start recognizer
-            rec.RecognizeAsync(RecognizeMode.Multiple);
-            recognising = true;
-        }
-
-        public void stopRecognition()
-        {
-            //Start recognizer
-            rec.RecognizeAsyncCancel();
-            recognising = true;
-        }
-
-        protected virtual void OnExitEvent()
-        {
-            if (ExitEvent != null)
-                ExitEvent(this, EventArgs.Empty);
         }
 
         private void Rec_Detected(object sender, SpeechDetectedEventArgs e)
@@ -256,10 +250,54 @@ namespace Voice_Coding.src
             Console.WriteLine("----------------------------");
         }
 
+        private void Rec_AudioUpdate(object obj, AudioLevelUpdatedEventArgs e)
+        {
+            statusBar.toggleBtn.BorderThickness = new Thickness(e.AudioLevel*4/100);
+        }
+
+        //----------------------------------------------------------------------------------------
+
+        protected virtual void OnExitEvent()
+        {
+            if (ExitEvent != null)
+                ExitEvent(this, EventArgs.Empty);
+        }
+
+        private void OnToggle(object src, RoutedEventArgs e)
+        {
+            if (recognising) { rec.RecognizeAsyncCancel(); recognising = false; }
+            else { rec.RecognizeAsync(RecognizeMode.Multiple); recognising = true; }
+            statusBar.toggleColor(recognising);
+        }
+
+        //----------------------------------------------------------------------------------------
+
+        public void startRecognition()
+        {
+            //Start recognizer
+            rec.RecognizeAsync(RecognizeMode.Multiple);
+            recognising = true;
+        }
+
+        public void stopRecognition()
+        {
+            //Start recognizer
+            if (recognising)
+            {
+                rec.RecognizeAsyncCancel();
+                recognising = false;
+            }
+        }
+
         public static Icon getIcon()
         {
             return Resources.icon_tray_b_w;
         }
 
+        public void Close()
+        {
+            stopRecognition();
+            statusBar.Close();
+        }
     }
 }

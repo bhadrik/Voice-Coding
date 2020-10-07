@@ -8,18 +8,20 @@ namespace Voice_Coding
 {
     public partial class MainWindow : Window
     {
-        int level = 0;
+        readonly int level = 0;
         //Recognizer objects
-        private readonly CodeRecognition rec = new CodeRecognition();
+        private readonly CodeRecognition rec;
 
         //Tray icon
-        private NotifyIcon notifyIcon;
-        private ContextMenu menu;
-        private MenuItem exit_Item;
+        private readonly NotifyIcon notifyIcon;
+        private readonly ContextMenu menu;
+        private readonly MenuItem exit_Item;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            rec = new CodeRecognition();
 
             menu = new System.Windows.Forms.ContextMenu();
             exit_Item = new System.Windows.Forms.MenuItem();
@@ -33,7 +35,6 @@ namespace Voice_Coding
             notifyIcon = new System.Windows.Forms.NotifyIcon();
             notifyIcon.Text = "Voice Coding";
             notifyIcon.Icon = CodeRecognition.getIcon();
-            notifyIcon.Click += new EventHandler(NotifyIcon_Click);
             notifyIcon.ContextMenu = menu;
             notifyIcon.Visible = true;
 
@@ -42,31 +43,11 @@ namespace Voice_Coding
             SetWindowToBottomRightOfScreen();
         }
 
-        public void NotifyIcon_Click(object source, EventArgs e)
-        {
-            if (rec.recognising)
-            {
-                rec.stopRecognition();
-                rec.recognising = false;
-            }
-            else
-            {
-                rec.startRecognition();
-                rec.recognising = true;
-            }
-
-            this.Show();
-        }
-
         private void ExitApp(object sender, EventArgs e)
         {
             notifyIcon.Dispose();
+            rec.Close();
             this.Close();
-        }
-
-        private void OnMainWindowClose(Object src, CancelEventArgs e)
-        {
-            notifyIcon.Dispose();
         }
 
         private void SetWindowToBottomRightOfScreen()

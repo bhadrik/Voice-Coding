@@ -10,7 +10,7 @@ namespace Voice_Coding.src
         private static Choices printType =
             new Choices(new string[] { "variable", "string" });
         private static Choices printCmdType =
-            new Choices(new string[] { "printf", "printline" });
+            new Choices(new string[] { "print", "print line" });
         private static Choices headers =
             new Choices(new string[] { "iostream", "cstdlib", "cmaths", "strnig" });
 
@@ -25,7 +25,7 @@ namespace Voice_Coding.src
 
             functionBuilder.Append("function");
             functionBuilder.Append(dataType);
-            functionBuilder.AppendDictation();
+            functionBuilder.AppendDictation("spelling");
 
             printBuilder.Append(printCmdType);
             printBuilder.Append(printType);
