@@ -1,1 +1,1 @@
-hello;up;down;left;right;newline;tab;erase;clear;back;stop;exit
+Hello;up;down;left;right;newline;tab;erase;clear;back;stop;exit

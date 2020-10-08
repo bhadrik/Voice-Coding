@@ -233,8 +233,7 @@ namespace Voice_Coding.src
                     break;
 
                 default:
-                    sim.Keyboard.TextEntry(e.Result.Text);
-                    //Console.WriteLine("Default\n");
+                    statusBar.status.Content += ", I'm listening";
                     break;
             }
         }
