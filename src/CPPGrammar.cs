@@ -10,6 +10,7 @@ namespace Voice_Coding.src
         //Choices for differet grammar
 
         private static GrammarBuilder includeBuilder = new GrammarBuilder();
+        private static GrammarBuilder namespaceBuilder = new GrammarBuilder();
         private static GrammarBuilder functionBuilder = new GrammarBuilder();
         private static GrammarBuilder printBuilder = new GrammarBuilder();
 
@@ -31,6 +32,10 @@ namespace Voice_Coding.src
             includeBuilder.Append("include");
             includeBuilder.Append(getChoice("Headerfiles"));
 
+            namespaceBuilder.Append("using namespace");
+            //namespaceBuilder.Append("namespace");
+            namespaceBuilder.Append(getChoice("namespace"));
+
             functionBuilder.Append("function");
             functionBuilder.Append(getChoice("Datatype"));
             functionBuilder.AppendDictation();
@@ -41,18 +46,19 @@ namespace Voice_Coding.src
 
         private static Choices getChoice(string key)
         {
+            key = key.ToUpper();
             int startIndex = Resources.database.IndexOf(key) + key.Length + 3;
             int endIndex = Resources.database.IndexOf("}", startIndex) - 2;
 
             string[] send = Resources.database.Substring(startIndex, endIndex - startIndex).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-            Console.WriteLine("This is function call:::");
+            //Console.WriteLine("This is function call:::");
             for(int i=0; i<send.Length; i++)
             {
                 send[i] = send[i].TrimEnd('\r', '\n');
             }
-            foreach(string str in send)
-                Console.WriteLine(str);
+            //foreach(string str in send)
+                //Console.WriteLine(str);
             Console.WriteLine("Total sent : " + send.Length);
 
             return new Choices(send);
@@ -61,6 +67,11 @@ namespace Voice_Coding.src
         public static Grammar Include
         {
             get { return new Grammar(includeBuilder); }
+        }
+
+        public static Grammar Namespace
+        {
+            get { return new Grammar(namespaceBuilder); }
         }
 
         public static Grammar Function

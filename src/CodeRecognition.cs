@@ -2,8 +2,10 @@
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Speech.Recognition;
 using System.Windows;
+using System.Windows.Input;
 using WindowsInput;
 using WindowsInput.Native;
 
@@ -34,9 +36,9 @@ namespace Voice_Coding.src
             rec.SetInputToDefaultAudioDevice();
 
             //Load all different grammars
-            string[] commands = Resources.commands.Split(';');
-            rec.LoadGrammarAsync(new Grammar(new GrammarBuilder(new Choices(commands))));
+            rec.LoadGrammarAsync(new Grammar(new GrammarBuilder(new Choices(Resources.commands.Split(';')))));
             rec.LoadGrammarAsync(CPPGrammar.Include);
+            rec.LoadGrammarAsync(CPPGrammar.Namespace);
             rec.LoadGrammarAsync(CPPGrammar.Function);
             rec.LoadGrammarAsync(CPPGrammar.Print);
 
@@ -81,21 +83,31 @@ namespace Voice_Coding.src
             Console.WriteLine();
             RecognizedWordUnit firstWord = e.Result.Words.First();
 
-            Console.Write("CMD: " + firstWord.Text);
+            Console.WriteLine("CMD: " + firstWord.Text);
             statusBar.changeText(e.Result.Text + " " + e.Result.Confidence.ToString());
+
+            string value, rslt ;
 
             switch (firstWord.Text)
             {
                 // INCLUDE "file_name"
                 case "include":
-                    string value = e.Result.Text.Replace("include ", "");
+                    value = e.Result.Text.Substring(firstWord.Text.Length + 1);
+                    rslt = findInDictionary(value);
                     Console.WriteLine(value);
-                    string str;
-                    CPPGrammar.dictionary.TryGetValue(value, out str);
-                    Console.WriteLine("INCLUDE:" + value + ":" + str);
-                    sim.Keyboard.TextEntry("#include <" + str + ">");
+                    Console.WriteLine("INCLUDE:" + value + ":" + rslt);
+                    sim.Keyboard.TextEntry("#include <" + rslt + ">");
                     sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
                     break;
+
+                case "using":
+                    value = e.Result.Text.Substring("using namespace ".Length);
+                    Console.WriteLine(value);
+                    //CPPGrammar.dictionary.TryGetValue(value, out rslt);
+                    sim.Keyboard.TextEntry("using namespace " + findInDictionary(value) + ";");
+                    sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
+                    break;
+
 
                 // FUNCTION "data_type" "Function_name"
                 case "function":
@@ -142,8 +154,6 @@ namespace Voice_Coding.src
                         sim.Keyboard.KeyPress(VirtualKeyCode.RIGHT);
                         sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
                     }
-                    for (int i = 0; i < level; i++)
-                        sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
                     break;
 
                 // PRINTLINE  STRING/VAR "data_to_be_printed"
@@ -175,8 +185,6 @@ namespace Voice_Coding.src
                         sim.Keyboard.KeyPress(VirtualKeyCode.END);
                         sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
                     }
-                    for (int i = 0; i < level; i++)
-                        sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
                     break;
 
                 case "back":
@@ -239,6 +247,11 @@ namespace Voice_Coding.src
                     OnExitEvent();
                     break;
             }
+            for(int i=0; i<level; i++)
+            {
+                sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
+            }
+            level = 0;
         }
 
         private void Rec_Detected(object sender, SpeechDetectedEventArgs e)
@@ -256,6 +269,13 @@ namespace Voice_Coding.src
         {
             int maxBordersize = 7;
             statusBar.toggleBtn.BorderThickness = new Thickness(e.AudioLevel*maxBordersize/100);
+        }
+
+        private string findInDictionary(string value)
+        {
+            string str;
+            CPPGrammar.dictionary.TryGetValue(value, out str);
+            return str;
         }
 
         //----------------------------------------------------------------------------------------

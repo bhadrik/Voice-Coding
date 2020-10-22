@@ -1,4 +1,4 @@
-Datatype{
+DATATYPE{
 void
 integer
 char
@@ -7,16 +7,21 @@ float
 double
 }
 
-Headerfiles{
+HEADERFILES{
 io stream
 input output stream
 standard lib
 stdlib
 maths
 string
+code recognition
 }
 
-Printstyle{
+PRINTSTYLE{
 print string
 print var
+}
+
+NAMESPACE{
+standard
 }

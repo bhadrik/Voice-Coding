@@ -12,3 +12,5 @@ maths:cmaths
 string:string
 print string:cout<<""<<
 print var:cout<<<<endl
+standard:std
+code recognition:CodeRecognition
