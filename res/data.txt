@@ -1,0 +1,14 @@
+void:void
+integer:int
+char:char
+boolean:bool
+float:float
+double:double
+input output stream:iostream
+io stream:iostream
+standard lib:cstdlib
+stdlib:cstdlib
+maths:cmaths
+string:string
+print string:cout<<""<<
+print var:cout<<<<endl

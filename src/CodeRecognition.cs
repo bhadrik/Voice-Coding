@@ -15,15 +15,14 @@ namespace Voice_Coding.src
         int level = 0;
 
         public event EventHandler ExitEvent;
-        public event EventHandler<AudioLevelUpdatedEventArgs> AudioUpdate;
 
         //Recognizer objects
         private SpeechRecognitionEngine rec;
 
         //To simulat keybord & mouse input
-        private InputSimulator sim;
+        private readonly InputSimulator sim;
 
-        private StatusBar statusBar;
+        private readonly StatusBar statusBar;
 
         public CodeRecognition()
         {
@@ -73,26 +72,34 @@ namespace Voice_Coding.src
 
         private void Rec_Recognised(object sender, SpeechRecognizedEventArgs e)
         {
+            //if (e.Result.Confidence < 0.8f)
+            //{
+            //    statusBar.changeText("//" + e.Result.Text + "//" + e.Result.Confidence.ToString());
+            //    return;
+            //}
             Console.Write(e.Result.Confidence);
             Console.WriteLine();
             RecognizedWordUnit firstWord = e.Result.Words.First();
 
             Console.Write("CMD: " + firstWord.Text);
-            statusBar.changeText(e.Result.Text);
+            statusBar.changeText(e.Result.Text + " " + e.Result.Confidence.ToString());
 
             switch (firstWord.Text)
             {
                 // INCLUDE "file_name"
                 case "include":
-                    RecognizedWordUnit tempWord = e.Result.Words.ElementAt(1);
-                    Console.WriteLine(tempWord.Text);
-                    sim.Keyboard.TextEntry("#include <" + tempWord.Text + ">");
+                    string value = e.Result.Text.Replace("include ", "");
+                    Console.WriteLine(value);
+                    string str;
+                    CPPGrammar.dictionary.TryGetValue(value, out str);
+                    Console.WriteLine("INCLUDE:" + value + ":" + str);
+                    sim.Keyboard.TextEntry("#include <" + str + ">");
                     sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
                     break;
 
                 // FUNCTION "data_type" "Function_name"
                 case "function":
-                    tempWord = e.Result.Words.ElementAt(1);
+                    RecognizedWordUnit tempWord = e.Result.Words.ElementAt(1);
                     Console.Write(" " + tempWord.Text);
                     sim.Keyboard.TextEntry(tempWord.Text);
                     tempWord = e.Result.Words.ElementAt(2);
@@ -231,10 +238,6 @@ namespace Voice_Coding.src
                 case "exit":
                     OnExitEvent();
                     break;
-
-                default:
-                    statusBar.status.Content += ", I'm listening";
-                    break;
             }
         }
 
@@ -251,7 +254,8 @@ namespace Voice_Coding.src
 
         private void Rec_AudioUpdate(object obj, AudioLevelUpdatedEventArgs e)
         {
-            statusBar.toggleBtn.BorderThickness = new Thickness(e.AudioLevel*4/100);
+            int maxBordersize = 7;
+            statusBar.toggleBtn.BorderThickness = new Thickness(e.AudioLevel*maxBordersize/100);
         }
 
         //----------------------------------------------------------------------------------------
@@ -264,8 +268,8 @@ namespace Voice_Coding.src
 
         private void OnToggle(object src, RoutedEventArgs e)
         {
-            if (recognising) { rec.RecognizeAsyncCancel(); recognising = false; statusBar.status.Content = "PAUSE";  }
-            else { rec.RecognizeAsync(RecognizeMode.Multiple); recognising = true; statusBar.status.Content = "STARTED"; }
+            if (recognising) { rec.RecognizeAsyncCancel(); recognising = false; statusBar.status.Content = "Recognition Stop";  }
+            else { rec.RecognizeAsync(RecognizeMode.Multiple); recognising = true; statusBar.status.Content = "I'm listening..."; }
             statusBar.toggleColor(recognising);
         }
 

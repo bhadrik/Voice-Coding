@@ -1,0 +1,22 @@
+Datatype{
+void
+integer
+char
+boolean
+float
+double
+}
+
+Headerfiles{
+io stream
+input output stream
+standard lib
+stdlib
+maths
+string
+}
+
+Printstyle{
+print string
+print var
+}

@@ -61,11 +61,70 @@ namespace Voice_Coding {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to hello;up;down;left;right;newline;tab;erase;clear;back;stop;exit.
+        ///   Looks up a localized string similar to Hello;
+        ///up;
+        ///down;
+        ///left;
+        ///right;
+        ///newline;
+        ///tab;
+        ///erase;
+        ///clear;
+        ///back;
+        ///stop;
+        ///exit.
         /// </summary>
         public static string commands {
             get {
                 return ResourceManager.GetString("commands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to void:void;
+        ///integer:int;
+        ///char:char;
+        ///boolean:bool;
+        ///float:float;
+        ///double:double;
+        ///
+        ///inputoutputstream:iostream;
+        ///standard lib:cstdlib;
+        ///maths:cmaths;
+        ///string:string;
+        ///
+        ///print string:cout&lt;&lt;&quot;&quot;&lt;&lt;;
+        ///print var:cout&lt;&lt;&lt;&lt;endl;.
+        /// </summary>
+        public static string data {
+            get {
+                return ResourceManager.GetString("data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Datatype{
+        ///void:void;
+        ///integer:int;
+        ///char:char;
+        ///boolean:bool;
+        ///float:float;
+        ///double:double;
+        ///}
+        ///Headerfiles{
+        ///inputoutputstream:iostream;
+        ///standard lib:cstdlib;
+        ///maths:cmaths;
+        ///string:string;
+        ///}
+        ///PrintStyle{
+        ///print string:cout&lt;&lt;&quot;&quot;&lt;&lt;;
+        ///print var:cout&lt;&lt;&lt;&lt;endl;
+        ///}.
+        /// </summary>
+        public static string database {
+            get {
+                return ResourceManager.GetString("database", resourceCulture);
             }
         }
         

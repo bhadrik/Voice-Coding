@@ -1,18 +1,13 @@
-﻿using System.Speech.Recognition;
+﻿using System;
+using System.Collections.Generic;
+using System.Speech.Recognition;
 
 namespace Voice_Coding.src
 {
     class CPPGrammar
     {
+        public static IDictionary<string, string> dictionary;
         //Choices for differet grammar
-        private static Choices dataType =
-            new Choices(new string[] { "void", "int", "char", "bool", "float", "double" });
-        private static Choices printType =
-            new Choices(new string[] { "variable", "string" });
-        private static Choices printCmdType =
-            new Choices(new string[] { "print", "print line" });
-        private static Choices headers =
-            new Choices(new string[] { "iostream", "cstdlib", "cmaths", "strnig" });
 
         private static GrammarBuilder includeBuilder = new GrammarBuilder();
         private static GrammarBuilder functionBuilder = new GrammarBuilder();
@@ -20,16 +15,47 @@ namespace Voice_Coding.src
 
         public static void InitializeDefaultGrammer()
         {
+            //Console.WriteLine(temp);
+            string[] doubleData = Resources.data.Split('\n');
+            dictionary = new Dictionary<string, string>();
+
+            foreach (string str in doubleData)
+            {
+                string temp = str.TrimEnd('\r', '\n');
+                string[] single = temp.Split(':');
+
+                //Console.WriteLine(single[1]);
+                dictionary.Add(new KeyValuePair<string, string>(single[0], single[1]));
+            }
+
             includeBuilder.Append("include");
-            includeBuilder.Append(headers);
+            includeBuilder.Append(getChoice("Headerfiles"));
 
             functionBuilder.Append("function");
-            functionBuilder.Append(dataType);
-            functionBuilder.AppendDictation("spelling");
+            functionBuilder.Append(getChoice("Datatype"));
+            functionBuilder.AppendDictation();
 
-            printBuilder.Append(printCmdType);
-            printBuilder.Append(printType);
+            printBuilder.Append(getChoice("Printstyle"));
             printBuilder.AppendDictation();
+        }
+
+        private static Choices getChoice(string key)
+        {
+            int startIndex = Resources.database.IndexOf(key) + key.Length + 3;
+            int endIndex = Resources.database.IndexOf("}", startIndex) - 2;
+
+            string[] send = Resources.database.Substring(startIndex, endIndex - startIndex).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            Console.WriteLine("This is function call:::");
+            for(int i=0; i<send.Length; i++)
+            {
+                send[i] = send[i].TrimEnd('\r', '\n');
+            }
+            foreach(string str in send)
+                Console.WriteLine(str);
+            Console.WriteLine("Total sent : " + send.Length);
+
+            return new Choices(send);
         }
 
         public static Grammar Include
