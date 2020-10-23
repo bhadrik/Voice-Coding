@@ -2,10 +2,8 @@
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Speech.Recognition;
 using System.Windows;
-using System.Windows.Input;
 using WindowsInput;
 using WindowsInput.Native;
 

@@ -9,10 +9,10 @@ namespace Voice_Coding.src
         public static IDictionary<string, string> dictionary;
         //Choices for differet grammar
 
-        private static GrammarBuilder includeBuilder = new GrammarBuilder();
-        private static GrammarBuilder namespaceBuilder = new GrammarBuilder();
-        private static GrammarBuilder functionBuilder = new GrammarBuilder();
-        private static GrammarBuilder printBuilder = new GrammarBuilder();
+        private static readonly GrammarBuilder includeBuilder = new GrammarBuilder();
+        private static readonly GrammarBuilder namespaceBuilder = new GrammarBuilder();
+        private static readonly GrammarBuilder functionBuilder = new GrammarBuilder();
+        private static readonly GrammarBuilder printBuilder = new GrammarBuilder();
 
         public static void InitializeDefaultGrammer()
         {
