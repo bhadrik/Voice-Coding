@@ -1,25 +1,33 @@
 DATATYPE{
 void
 integer
+int
 char
+character
 boolean
 float
 double
 }
 
 HEADERFILES{
-io stream
-input output stream
-standard lib
+io_stream
+input_output_stream
+standard_lib
 stdlib
 maths
 string
-code recognition
+code_recognition
 }
 
 PRINTSTYLE{
-print string
-print var
+print_line
+print
+}
+
+PRINTVALUE{
+var
+variable
+string
 }
 
 NAMESPACE{

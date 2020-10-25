@@ -1,16 +1,18 @@
 void:void
 integer:int
+int:int
 char:char
+character:char
 boolean:bool
 float:float
 double:double
-input output stream:iostream
-io stream:iostream
-standard lib:cstdlib
+input_output_stream:iostream
+io_stream:iostream
+standard_lib:cstdlib
 stdlib:cstdlib
 maths:cmaths
-string:string
-print string:cout<<""<<
-print var:cout<<<<endl
+string:cout<<""<<;
+var:cout<<<<endl;
+variable:cout<<<<endl;
 standard:std
-code recognition:CodeRecognition
+code_recognition:CodeRecognition
