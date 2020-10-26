@@ -35,12 +35,9 @@ namespace Voice_Coding.src
             rec.SetInputToDefaultAudioDevice();
 
             //Loading basic grammar
-            rec.LoadGrammarAsync(
-                new Grammar(
-                    new GrammarBuilder(
-                        new Choices(
-                            DataResource.commands.Replace("\r","").Replace("\n",";").Split(';'))))
-                        );
+            rec.LoadGrammarAsync(new Grammar(new GrammarBuilder(new Choices(
+                    DataResource.commands.Replace("\r","").Replace("\n",";").Split(';'))))
+                );
 
             //Loading C++ grammar
             rec.LoadGrammarAsync(CPPGrammar.GetGrammar);
