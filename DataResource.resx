@@ -121,6 +121,12 @@
   <data name="commands" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>res\commands.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="data" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>res\data.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="database" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>res\database.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
   <data name="icon_tray_b_w" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>res\Icon\icon_tray_b&amp;w.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using System.Speech.Recognition;
+using System.Threading;
 using System.Windows;
+using System.Windows.Input;
 using WindowsInput;
 using WindowsInput.Native;
 
@@ -11,35 +12,35 @@ namespace Voice_Coding.src
 {
     class CodeRecognition
     {
-        public bool recognising;
+        public bool recognizing;
         int level = 0;
 
         public event EventHandler ExitEvent;
-        public event EventHandler<AudioLevelUpdatedEventArgs> AudioUpdate;
 
         //Recognizer objects
-        private SpeechRecognitionEngine rec;
+        private readonly SpeechRecognitionEngine rec;
 
         //To simulat keybord & mouse input
-        private InputSimulator sim;
+        private readonly InputSimulator sim;
 
-        private StatusBar statusBar;
+        private readonly StatusBar statusBar;
 
         public CodeRecognition()
         {
+            //CPPGrammar.InitializeDefaultGrammer();
+
             rec = new SpeechRecognitionEngine(new CultureInfo("en-US"));
             sim = new InputSimulator();
 
-            CPPGrammar.InitializeDefaultGrammer();
-
             rec.SetInputToDefaultAudioDevice();
 
-            //Load all different grammars
-            string[] commands = Resources.commands.Split(';');
-            rec.LoadGrammarAsync(new Grammar(new GrammarBuilder(new Choices(commands))));
-            rec.LoadGrammarAsync(CPPGrammar.Include);
-            rec.LoadGrammarAsync(CPPGrammar.Function);
-            rec.LoadGrammarAsync(CPPGrammar.Print);
+            //Loading basic grammar
+            rec.LoadGrammarAsync(new Grammar(new GrammarBuilder(new Choices(
+                    DataResource.commands.Replace("\r","").Replace("\n",";").Split(';'))))
+                );
+
+            //Loading C++ grammar
+            rec.LoadGrammarAsync(CPPGrammar.GetGrammar);
 
             //All event handler
             rec.SpeechRecognized +=
@@ -55,6 +56,8 @@ namespace Voice_Coding.src
             /*
             Thread.Sleep(3000);
             rec.EmulateRecognizeAsync("include iostream");
+            Thread.Sleep(3000);
+            rec.EmulateRecognizeAsync("using_namespace standard");
             Thread.Sleep(500);
             rec.EmulateRecognizeAsync("function void main");
             Thread.Sleep(500);
@@ -73,115 +76,73 @@ namespace Voice_Coding.src
 
         private void Rec_Recognised(object sender, SpeechRecognizedEventArgs e)
         {
-            Console.Write(e.Result.Confidence);
-            Console.WriteLine();
-            RecognizedWordUnit firstWord = e.Result.Words.First();
+            string[] words = e.Result.Text.Split(' ');
+            string rslt="<NOT SETED>", data = "<NOT SETED>";
 
-            Console.Write("CMD: " + firstWord.Text);
-            statusBar.changeText(e.Result.Text);
-
-            switch (firstWord.Text)
+            Console.WriteLine("CMD: " + words[0]);
+            
+            if(words.Length > 1)
             {
-                // INCLUDE "file_name"
+                rslt = FindInDictionary(words[1]);
+                data = e.Result.Text.Replace(words[0] + " " + words[1] + " ", "");
+            }
+
+            statusBar.changeText($"{e.Result.Text} [{e.Result.Confidence}] [{e.Result.Grammar.Name}]");
+
+            switch (words[0])
+            {
+                //INCLUDE "file_name"  2
                 case "include":
-                    RecognizedWordUnit tempWord = e.Result.Words.ElementAt(1);
-                    Console.WriteLine(tempWord.Text);
-                    sim.Keyboard.TextEntry("#include <" + tempWord.Text + ">");
-                    sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
+                    sim.Keyboard.TextEntry($"#include < {rslt} >\r");
                     break;
 
-                // FUNCTION "data_type" "Function_name"
+                //USING_NAMESPACE "name_of_namespace"  2
+                case "using_namespace":
+                    sim.Keyboard.TextEntry($"using namespace {rslt};\r");
+                    break;
+
+                //FUNCTION "data_type" "Function_name" 3
                 case "function":
-                    tempWord = e.Result.Words.ElementAt(1);
-                    Console.Write(" " + tempWord.Text);
-                    sim.Keyboard.TextEntry(tempWord.Text);
-                    tempWord = e.Result.Words.ElementAt(2);
-                    Console.WriteLine(" " + tempWord.Text);
-                    sim.Keyboard.TextEntry(" " + tempWord.Text + "()");
-                    sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
-                    sim.Keyboard.TextEntry("{}");
-                    sim.Keyboard.KeyPress(VirtualKeyCode.LEFT);
-                    sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
-                    sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
-                    sim.Keyboard.KeyPress(VirtualKeyCode.UP);
+                    sim.Keyboard.TextEntry(rslt + " " + words[2] + "()\r{\r\t\r}\r");
+                    sim.Keyboard.KeyPress(
+                        new VirtualKeyCode[] {
+                            VirtualKeyCode.UP,
+                            VirtualKeyCode.UP
+                        });
                     level++;
                     break;
 
-                // PRINTF  STRING/VAR "data_to_be_printed"
-                case "print":
-                    tempWord = e.Result.Words.ElementAt(1);
-                    Console.Write(" " + tempWord.Text);
-                    sim.Keyboard.TextEntry("cout<<;");
-                    if (tempWord.Text == "string")
-                    {
-                        Console.WriteLine(" " + tempWord.Text + " <INPUT STRING>");
-                        sim.Keyboard.KeyPress(VirtualKeyCode.LEFT);
-                        sim.Keyboard.TextEntry("\"\"");
-                        sim.Keyboard.KeyPress(VirtualKeyCode.LEFT);
-                        string inputData = e.Result.Text;
-                        inputData = inputData.Replace("printf string ", "");
-                        sim.Keyboard.TextEntry(inputData);
-                        sim.Keyboard.KeyPress(VirtualKeyCode.RIGHT);
-                        sim.Keyboard.KeyPress(VirtualKeyCode.RIGHT);
-                        sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
-                    }
-                    else if (tempWord.Text == "variable")
-                    {
-                        Console.Write(" " + tempWord.Text);
-                        tempWord = e.Result.Words.ElementAt(2);
-                        Console.WriteLine(" " + tempWord.Text);
-                        sim.Keyboard.KeyPress(VirtualKeyCode.LEFT);
-                        sim.Keyboard.TextEntry(tempWord.Text);
-                        sim.Keyboard.KeyPress(VirtualKeyCode.RIGHT);
-                        sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
-                    }
-                    for (int i = 0; i < level; i++)
-                        sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
+                //PRINT_LINE STRING/VAR "data_to_be_printed"  3
+                case "print_line":
+                    if (words[1] == "string")
+                        sim.Keyboard.TextEntry($"cout<<\"{data}\"<<endl;\r");
+                    else
+                        sim.Keyboard.TextEntry($"cout<<{data}<<endl;\r");
                     break;
 
-                // PRINTLINE  STRING/VAR "data_to_be_printed"
-                case "printline":
-                    tempWord = e.Result.Words.ElementAt(1);
+                //PRINT STRING/VAR "data_to_be_printed" 3
+                case "print":
+                    if (words[1] == "string")
+                        sim.Keyboard.TextEntry($"cout<<\"{data}\";\r");
+                    else
+                        sim.Keyboard.TextEntry($"cout<<{data};\r");
+                    break;
 
-                    Console.Write(" " + tempWord.Text);
-                    statusBar.changeText(tempWord.Text);
-
-                    sim.Keyboard.TextEntry("cout<<<<endl;");
-                    for (int i = 0; i < 7; i++) sim.Keyboard.KeyPress(VirtualKeyCode.LEFT);
-
-                    if (tempWord.Text == "string")
-                    {
-                        Console.WriteLine(" string" + " <INPUT STRING>");
-                        sim.Keyboard.TextEntry("\"\"");
-                        sim.Keyboard.KeyPress(VirtualKeyCode.LEFT);
-                        string inputData = e.Result.Text;
-                        inputData = inputData.Replace("printline string ", "");
-                        sim.Keyboard.TextEntry(inputData);
-                        sim.Keyboard.KeyPress(VirtualKeyCode.END);
-                        sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
-                    }
-                    else if (tempWord.Text == "variable")
-                    {
-                        tempWord = e.Result.Words.ElementAt(2);
-                        Console.Write("variable " + tempWord.Text);
-                        sim.Keyboard.TextEntry(tempWord.Text);
-                        sim.Keyboard.KeyPress(VirtualKeyCode.END);
-                        sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
-                    }
-                    for (int i = 0; i < level; i++)
-                        sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
+                case "undo":
+                    sim.Keyboard.KeyDown(VirtualKeyCode.CONTROL);
+                    sim.Keyboard.KeyPress(VirtualKeyCode.VK_Z);
+                    sim.Keyboard.KeyUp(VirtualKeyCode.CONTROL);
+                    sim.Keyboard.KeyPress(VirtualKeyCode.RIGHT);
                     break;
 
                 case "back":
                     sim.Keyboard.KeyPress(VirtualKeyCode.BACK);
-                    Console.WriteLine("");
                     break;
 
                 case "erase":
                     sim.Keyboard.KeyDown(VirtualKeyCode.CONTROL);
                     sim.Keyboard.KeyPress(VirtualKeyCode.BACK);
                     sim.Keyboard.KeyUp(VirtualKeyCode.CONTROL);
-                    Console.WriteLine("");
                     break;
 
                 case "clear":
@@ -189,58 +150,51 @@ namespace Voice_Coding.src
                     sim.Keyboard.KeyPress(VirtualKeyCode.VK_A);
                     sim.Keyboard.KeyUp(VirtualKeyCode.CONTROL);
                     sim.Keyboard.KeyPress(VirtualKeyCode.BACK);
-                    Console.WriteLine("");
                     break;
 
                 case "left":
                     sim.Keyboard.KeyPress(VirtualKeyCode.LEFT);
-                    Console.WriteLine("");
                     break;
 
                 case "right":
                     sim.Keyboard.KeyPress(VirtualKeyCode.RIGHT);
-                    Console.WriteLine("");
                     break;
 
                 case "up":
                     sim.Keyboard.KeyPress(VirtualKeyCode.UP);
-                    Console.WriteLine("");
                     break;
 
                 case "down":
                     sim.Keyboard.KeyPress(VirtualKeyCode.DOWN);
-                    Console.WriteLine("");
                     break;
 
                 case "newline":
                     sim.Keyboard.KeyPress(VirtualKeyCode.RETURN);
-                    Console.WriteLine("");
                     break;
 
                 case "tab":
                     sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
-                    Console.WriteLine("");
                     break;
 
                 case "stop":
                     rec.RecognizeAsyncCancel();
-                    recognising = false;
-                    Console.WriteLine("");
+                    recognizing = false;
                     break;
 
                 case "exit":
                     OnExitEvent();
                     break;
-
-                default:
-                    statusBar.status.Content += ", I'm listening";
-                    break;
             }
+
+            for(int i=0; i<level; i++)
+                sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
+
+            level = 0;
         }
 
         private void Rec_Detected(object sender, SpeechDetectedEventArgs e)
         {
-            Console.WriteLine("Listening...");
+            Console.WriteLine(".....");
         }
 
         private void Rec_Completed(object sender, RecognizeCompletedEventArgs e)
@@ -251,7 +205,16 @@ namespace Voice_Coding.src
 
         private void Rec_AudioUpdate(object obj, AudioLevelUpdatedEventArgs e)
         {
-            statusBar.toggleBtn.BorderThickness = new Thickness(e.AudioLevel*4/100);
+            int maxBordersize = 7;
+            statusBar.toggleBtn.BorderThickness = new Thickness(e.AudioLevel*maxBordersize/100);
+        }
+
+        private string FindInDictionary(string value)
+        {
+            if (CPPGrammar.dictionary.TryGetValue(value, out string str))
+                return str;
+            else
+                return "<NotFound>";
         }
 
         //----------------------------------------------------------------------------------------
@@ -264,38 +227,55 @@ namespace Voice_Coding.src
 
         private void OnToggle(object src, RoutedEventArgs e)
         {
-            if (recognising) { rec.RecognizeAsyncCancel(); recognising = false; statusBar.status.Content = "PAUSE";  }
-            else { rec.RecognizeAsync(RecognizeMode.Multiple); recognising = true; statusBar.status.Content = "STARTED"; }
-            statusBar.toggleColor(recognising);
+            if (recognizing) { 
+                rec.RecognizeAsyncCancel();
+                recognizing = false;
+                statusBar.status.Content = "Recognition Stop";
+            }
+            else {
+                rec.RecognizeAsync(RecognizeMode.Multiple);
+                recognizing = true;
+                statusBar.status.Content = "I'm listening...";
+            }
+            statusBar.toggleColor(recognizing);
         }
 
         //----------------------------------------------------------------------------------------
 
-        public void startRecognition()
+        public void StartRecognition(bool emulate)
         {
-            //Start recognizer
-            rec.RecognizeAsync(RecognizeMode.Multiple);
-            recognising = true;
-        }
-
-        public void stopRecognition()
-        {
-            //Start recognizer
-            if (recognising)
+            if (emulate)
             {
-                rec.RecognizeAsyncCancel();
-                recognising = false;
+                Thread.Sleep(500);
+                rec.EmulateRecognizeAsync("include io_stream");
+                Thread.Sleep(500);
+                rec.EmulateRecognizeAsync("using_namespace standard");
+                Thread.Sleep(500);
+                rec.EmulateRecognizeAsync("function void main");
+                Thread.Sleep(500);
+                rec.EmulateRecognizeAsync("print_line string This string is going to be printed");
+            }
+            else
+            {
+                //Start recognizer
+                rec.RecognizeAsync(RecognizeMode.Multiple);
+                recognizing = true;
             }
         }
 
-        public static Icon getIcon()
+        public void StopRecognition()
         {
-            return Resources.icon_tray_b_w;
+            //Start recognizer
+            if (recognizing)
+            {
+                rec.RecognizeAsyncCancel();
+                recognizing = false;
+            }
         }
 
         public void Close()
         {
-            stopRecognition();
+            StopRecognition();
             statusBar.Close();
         }
     }

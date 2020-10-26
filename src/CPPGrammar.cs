@@ -1,50 +1,84 @@
-﻿using System.Speech.Recognition;
+﻿using System;
+using System.Collections.Generic;
+using System.Speech.Recognition;
 
 namespace Voice_Coding.src
 {
-    class CPPGrammar
+    static class CPPGrammar
     {
+        public static IDictionary<string, string> dictionary;
         //Choices for differet grammar
-        private static Choices dataType =
-            new Choices(new string[] { "void", "int", "char", "bool", "float", "double" });
-        private static Choices printType =
-            new Choices(new string[] { "variable", "string" });
-        private static Choices printCmdType =
-            new Choices(new string[] { "print", "print line" });
-        private static Choices headers =
-            new Choices(new string[] { "iostream", "cstdlib", "cmaths", "strnig" });
 
-        private static GrammarBuilder includeBuilder = new GrammarBuilder();
-        private static GrammarBuilder functionBuilder = new GrammarBuilder();
-        private static GrammarBuilder printBuilder = new GrammarBuilder();
+        private static readonly GrammarBuilder includeBuilder = new GrammarBuilder();
+        private static readonly GrammarBuilder namespaceBuilder = new GrammarBuilder();
+        private static readonly GrammarBuilder functionBuilder = new GrammarBuilder();
+        private static readonly GrammarBuilder printBuilder = new GrammarBuilder();
 
-        public static void InitializeDefaultGrammer()
+        private static Choices AllRules;
+
+        static CPPGrammar()
         {
+            string[] doubleData = DataResource.data.Replace("\r","").Replace("\n","^").Split('^');
+            dictionary = new Dictionary<string, string>();
+
+            foreach (string str in doubleData)
+            {
+                string[] single = str.Split(':');
+                dictionary.Add(new KeyValuePair<string, string>(single[0], single[1]));
+            }
+
+            includeBuilder = new GrammarBuilder();
             includeBuilder.Append("include");
-            includeBuilder.Append(headers);
+            includeBuilder.Append(GetChoice("Headerfiles"));
 
+            namespaceBuilder = new GrammarBuilder();
+            namespaceBuilder.Append("using_namespace");
+            namespaceBuilder.Append(GetChoice("namespace"));
+
+            functionBuilder = new GrammarBuilder();
             functionBuilder.Append("function");
-            functionBuilder.Append(dataType);
-            functionBuilder.AppendDictation("spelling");
+            functionBuilder.Append(GetChoice("datatype"));
+            functionBuilder.AppendDictation();
 
-            printBuilder.Append(printCmdType);
-            printBuilder.Append(printType);
+            printBuilder = new GrammarBuilder();
+            printBuilder.Append(GetChoice("printstyle"));
+            printBuilder.Append(GetChoice("printvalue"));
             printBuilder.AppendDictation();
+
+            AllRules = new Choices(
+                new GrammarBuilder[] {
+                    includeBuilder,
+                    namespaceBuilder,
+                    functionBuilder,
+                    printBuilder
+                });
         }
 
-        public static Grammar Include
+        private static Choices GetChoice(string key)
         {
-            get { return new Grammar(includeBuilder); }
+            key = key.ToUpper();
+            int startIndex = DataResource.database.IndexOf(key) + key.Length + 3;
+            int endIndex = DataResource.database.IndexOf("}", startIndex) - 2;
+
+            string[] send = DataResource.database.Substring(startIndex, endIndex - startIndex).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            for (int i = 0; i < send.Length; i++)
+            {
+                send[i] = send[i].TrimEnd('\r', '\n');
+            }
+
+            return new Choices(send);
         }
 
-        public static Grammar Function
+        public static Grammar GetGrammar
         {
-            get { return new Grammar(functionBuilder); }
-        }
-
-        public static Grammar Print
-        {
-            get { return new Grammar(printBuilder); }
+            get {
+                Grammar grammar = new Grammar((GrammarBuilder)AllRules)
+                {
+                    Name = "VoiceCoding_CPP", 
+                };
+                return grammar;
+            }
         }
     }
 }
