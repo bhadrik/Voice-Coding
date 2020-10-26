@@ -18,13 +18,12 @@ namespace Voice_Coding.src
 
         static CPPGrammar()
         {
-            string[] doubleData = Resources.data.Replace("\r","").Replace("\n","^").Split('^');
+            string[] doubleData = DataResource.data.Replace("\r","").Replace("\n","^").Split('^');
             dictionary = new Dictionary<string, string>();
 
             foreach (string str in doubleData)
             {
                 string[] single = str.Split(':');
-                
                 dictionary.Add(new KeyValuePair<string, string>(single[0], single[1]));
             }
 
@@ -58,10 +57,10 @@ namespace Voice_Coding.src
         private static Choices GetChoice(string key)
         {
             key = key.ToUpper();
-            int startIndex = Resources.database.IndexOf(key) + key.Length + 3;
-            int endIndex = Resources.database.IndexOf("}", startIndex) - 2;
+            int startIndex = DataResource.database.IndexOf(key) + key.Length + 3;
+            int endIndex = DataResource.database.IndexOf("}", startIndex) - 2;
 
-            string[] send = Resources.database.Substring(startIndex, endIndex - startIndex).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] send = DataResource.database.Substring(startIndex, endIndex - startIndex).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
             for (int i = 0; i < send.Length; i++)
             {
@@ -74,8 +73,10 @@ namespace Voice_Coding.src
         public static Grammar GetGrammar
         {
             get {
-                Grammar grammar = new Grammar((GrammarBuilder)AllRules);
-                grammar.Name = "VoiceCoding_CPP";
+                Grammar grammar = new Grammar((GrammarBuilder)AllRules)
+                {
+                    Name = "VoiceCoding_CPP", 
+                };
                 return grammar;
             }
         }

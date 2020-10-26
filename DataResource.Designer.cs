@@ -22,14 +22,14 @@ namespace Voice_Coding {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resources {
+    public class DataResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal DataResource() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Voice_Coding {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Voice_Coding.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Voice_Coding.DataResource", typeof(DataResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,17 +61,18 @@ namespace Voice_Coding {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello;
-        ///up;
-        ///down;
-        ///left;
-        ///right;
-        ///newline;
-        ///tab;
-        ///erase;
-        ///clear;
-        ///back;
-        ///stop;
+        ///   Looks up a localized string similar to Hello
+        ///undo
+        ///up
+        ///down
+        ///left
+        ///right
+        ///newline
+        ///tab
+        ///erase
+        ///clear
+        ///back
+        ///stop
         ///exit.
         /// </summary>
         public static string commands {
@@ -81,20 +82,24 @@ namespace Voice_Coding {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to void:void;
-        ///integer:int;
-        ///char:char;
-        ///boolean:bool;
-        ///float:float;
-        ///double:double;
-        ///
-        ///inputoutputstream:iostream;
-        ///standard lib:cstdlib;
-        ///maths:cmaths;
-        ///string:string;
-        ///
-        ///print string:cout&lt;&lt;&quot;&quot;&lt;&lt;;
-        ///print var:cout&lt;&lt;&lt;&lt;endl;.
+        ///   Looks up a localized string similar to void:void
+        ///integer:int
+        ///int:int
+        ///char:char
+        ///character:char
+        ///boolean:bool
+        ///float:float
+        ///double:double
+        ///input_output_stream:iostream
+        ///io_stream:iostream
+        ///standard_lib:cstdlib
+        ///stdlib:cstdlib
+        ///maths:cmaths
+        ///string:cout&lt;&lt;&quot;&quot;&lt;&lt;;
+        ///var:cout&lt;&lt;&lt;&lt;endl;
+        ///variable:cout&lt;&lt;&lt;&lt;endl;
+        ///standard:std
+        ///code_recognition:CodeRecognition.
         /// </summary>
         public static string data {
             get {
@@ -103,23 +108,40 @@ namespace Voice_Coding {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Datatype{
-        ///void:void;
-        ///integer:int;
-        ///char:char;
-        ///boolean:bool;
-        ///float:float;
-        ///double:double;
+        ///   Looks up a localized string similar to DATATYPE{
+        ///void
+        ///integer
+        ///int
+        ///char
+        ///character
+        ///boolean
+        ///float
+        ///double
         ///}
-        ///Headerfiles{
-        ///inputoutputstream:iostream;
-        ///standard lib:cstdlib;
-        ///maths:cmaths;
-        ///string:string;
+        ///
+        ///HEADERFILES{
+        ///io_stream
+        ///input_output_stream
+        ///standard_lib
+        ///stdlib
+        ///maths
+        ///string
+        ///code_recognition
         ///}
-        ///PrintStyle{
-        ///print string:cout&lt;&lt;&quot;&quot;&lt;&lt;;
-        ///print var:cout&lt;&lt;&lt;&lt;endl;
+        ///
+        ///PRINTSTYLE{
+        ///print_line
+        ///print
+        ///}
+        ///
+        ///PRINTVALUE{
+        ///var
+        ///variable
+        ///string
+        ///}
+        ///
+        ///NAMESPACE{
+        ///standard
         ///}.
         /// </summary>
         public static string database {

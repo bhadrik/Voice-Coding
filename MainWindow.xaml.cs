@@ -1,52 +1,34 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Forms;
 using Voice_Coding.src;
 
 namespace Voice_Coding
 {
     public partial class MainWindow : Window
     {
-        readonly int level = 0;
+        int level = 0;
+
         //Recognizer objects
         private readonly CodeRecognition rec;
 
         //Tray icon
-        private readonly NotifyIcon notifyIcon;
-        private readonly ContextMenu menu;
-        private readonly MenuItem exit_Item;
-        private readonly MenuItem settings;
+        private readonly TrayIcon notifyIcon;
 
         public MainWindow()
         {
             InitializeComponent();
+            //Set window to the bottom right corner
+            Left = SystemParameters.WorkArea.Width - Width - 10;
+            Top = SystemParameters.WorkArea.Height - Height - 10;
 
             rec = new CodeRecognition();
-
-            menu = new ContextMenu();
-            exit_Item = new MenuItem();
-            settings = new MenuItem();
-
-            menu.MenuItems.AddRange(new MenuItem[] { exit_Item, settings });
-
-            settings.Index = 0;
-            settings.Text = "Settings";
-            settings.Click += new EventHandler(OpenSettingsMenu);
-
-            exit_Item.Index = settings.Index + 1;
-            exit_Item.Text = "Exit";
-            exit_Item.Click += new EventHandler(ExitApp);
-
-            notifyIcon = new System.Windows.Forms.NotifyIcon();
-            notifyIcon.Text = "Voice Coding";
-            notifyIcon.Icon = CodeRecognition.getIcon();
-            notifyIcon.ContextMenu = menu;
-            notifyIcon.Visible = true;
-
-            rec.startRecognition();
+            rec.StartRecognition(false);
             rec.ExitEvent += new EventHandler(ExitApp);
-            SetWindowToBottomRightOfScreen();
+
+            notifyIcon = new TrayIcon();
+            notifyIcon.SettingClicked += new EventHandler(OpenSettingsMenu);
+            notifyIcon.ExitCommand += new EventHandler(ExitApp);
 
             this.Closing += new CancelEventHandler(ClosingWindow);
         }
@@ -65,12 +47,6 @@ namespace Voice_Coding
         private void OpenSettingsMenu(object sender, EventArgs e)
         {
             this.Show();
-        }
-
-        private void SetWindowToBottomRightOfScreen()
-        {
-            Left = SystemParameters.WorkArea.Width - Width - 10;
-            Top = SystemParameters.WorkArea.Height - Height - 10;
         }
 
         private void HideToTray(object sender, EventArgs e)

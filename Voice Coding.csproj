@@ -65,11 +65,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Resources.Designer.cs">
+    <Compile Include="DataResource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DependentUpon>DataResource.resx</DependentUpon>
     </Compile>
+    <Compile Include="TrayIcon.cs" />
     <Compile Include="src\CodeRecognition.cs" />
     <Compile Include="src\CPPGrammar.cs" />
     <Compile Include="StatusBar.xaml.cs">
@@ -110,9 +111,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.resx">
+    <EmbeddedResource Include="DataResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <LastGenOutput>DataResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -134,6 +135,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="res\data.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="VoiceCoding_72.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
