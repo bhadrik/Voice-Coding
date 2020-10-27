@@ -1,4 +1,4 @@
-[![License](https://img.shields.io/github/license/bhadrik/Voice-Coding)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://img.shields.io/github/license/bhadrik/Voice-Coding)](https://opensource.org/licenses/MIT)
 # Voice-Coding
 It uses voice commands to write a particular line or block of code. It is a simple background service that Continuously takes voice input from the user and writes appropriate code into the editor currently selected. It makes programming easy to write and increase production speed. 😃
 
