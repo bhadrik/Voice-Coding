@@ -1,4 +1,4 @@
-﻿//#define Notify
+﻿#define Notify
 
 using System;
 using System.ComponentModel;
