@@ -21,7 +21,7 @@
         <Label x:Name="status" HorizontalAlignment="Left" Margin="53.267,-3,0,-1.2" VerticalAlignment="Top" Foreground="#FFDFDFDF" Height="29" Width="743" FontSize="14" Grid.Column="1" Content="Commands"/>
         <Button x:Name="ExitStatusBar" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Height="27" Foreground="#FFFFEBEB" BorderBrush="{x:Null}" Click="ExitStatusBar_Click" Margin="-1,-1,0,-1.2" FontFamily="Franklin Gothic Demi Cond" Grid.ColumnSpan="2">
             <Button.Background>
-                <ImageBrush ImageSource="close.png"/>
+                <ImageBrush ImageSource="close.png" Stretch="UniformToFill"/>
             </Button.Background>
         </Button>
     </Grid>
