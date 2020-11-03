@@ -6,7 +6,8 @@ namespace Voice_Coding
 {
     public partial class StatusBar : Window
     {
-        public event EventHandler<RoutedEventArgs> toggleRecogniton;
+        public event EventHandler<RoutedEventArgs> ToggleRecogniton;
+        public event EventHandler<RoutedEventArgs> Exit;
         private Color turnOn, turnOff;
 
         public StatusBar()
@@ -15,23 +16,27 @@ namespace Voice_Coding
             Left = 0;
             Top = SystemParameters.WorkArea.Height - Height;
 
-            turnOn = Color.FromArgb(255, 34, 208, 142);
-            turnOff = Color.FromArgb(255, 208, 34, 34);
-            toggleBtn.Background = new SolidColorBrush(turnOn);
+            turnOn  = Color.FromArgb(255, 64, 192, 117);
+            turnOff = Color.FromArgb(255, 121, 121, 121);
         }
 
-        private void toggleBtn_Click(object sender, RoutedEventArgs e)
+        public void ToggleColor(bool on)
         {
-            toggleRecogniton?.Invoke(this, e);
-        }
-
-        public void toggleColor(bool on)
-        {
-            if(on) toggleBtn.Background = new SolidColorBrush(turnOn);
+            if (on) toggleBtn.Background = new SolidColorBrush(turnOn);
             else toggleBtn.Background = new SolidColorBrush(turnOff);
         }
 
-        public void changeText(String str)
+        private void ToggleBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleRecogniton?.Invoke(this, e);
+        }
+
+        private void ExitStatusBar_Click(object sender, RoutedEventArgs e)
+        {
+            Exit?.Invoke(sender, e);
+        }
+
+        public void ChangeText(String str)
         {
             status.Content = str;
         }

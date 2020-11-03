@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define Notify
+
+using System;
 using System.ComponentModel;
 using System.Windows;
 using Voice_Coding.src;
@@ -7,13 +9,19 @@ namespace Voice_Coding
 {
     public partial class MainWindow : Window
     {
-        int level = 0;
+        //int level = 0;
 
-        //Recognizer objects
         private readonly CodeRecognition rec;
+        private enum ClassType
+        {
+            MenuItem,
+            StatusBar,
+        }
 
+#if Notify
         //Tray icon
         private readonly TrayIcon notifyIcon;
+#endif
 
         public MainWindow()
         {
@@ -26,16 +34,19 @@ namespace Voice_Coding
             rec.StartRecognition(false);
             rec.ExitEvent += new EventHandler(ExitApp);
 
+#if Notify
             notifyIcon = new TrayIcon();
             notifyIcon.SettingClicked += new EventHandler(OpenSettingsMenu);
             notifyIcon.ExitCommand += new EventHandler(ExitApp);
-
+#endif
             this.Closing += new CancelEventHandler(ClosingWindow);
         }
 
         private void ClosingWindow(object sender, CancelEventArgs e)
         {
+#if Notify
             notifyIcon.Dispose();
+#endif
             rec.Close();
         }
 

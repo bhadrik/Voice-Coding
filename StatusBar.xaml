@@ -17,7 +17,12 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <Button x:Name="toggleBtn" Content=""  HorizontalAlignment="Left" Margin="5.598,4.067,0,4.734" VerticalAlignment="Center" Width="16" UseLayoutRounding="False" Height="15.999" Background="#FF22D069" BorderBrush="#FF5A66C0" BorderThickness="1" Click="toggleBtn_Click"/>
-        <Label x:Name="status" Content="Command" HorizontalAlignment="Left" Margin="23,-3,0,-1.2" VerticalAlignment="Top" Foreground="#FFDFDFDF" Height="29" Width="774" FontSize="14"/>
+        <Button x:Name="toggleBtn" Content=""  HorizontalAlignment="Left" Margin="28.731,-0.017,0,0.017" VerticalAlignment="Center" Width="24.6" UseLayoutRounding="False" Height="24.8" BorderBrush="#FF373737" BorderThickness="3" Click="ToggleBtn_Click" Background="#FF40C075" Grid.Column="1"/>
+        <Label x:Name="status" HorizontalAlignment="Left" Margin="53.267,-3,0,-1.2" VerticalAlignment="Top" Foreground="#FFDFDFDF" Height="29" Width="743" FontSize="14" Grid.Column="1" Content="Commands"/>
+        <Button x:Name="ExitStatusBar" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Height="27" Foreground="#FFFFEBEB" BorderBrush="{x:Null}" Click="ExitStatusBar_Click" Margin="-1,-1,0,-1.2" FontFamily="Franklin Gothic Demi Cond" Grid.ColumnSpan="2">
+            <Button.Background>
+                <ImageBrush ImageSource="close.png"/>
+            </Button.Background>
+        </Button>
     </Grid>
 </Window>
