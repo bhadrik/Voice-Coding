@@ -1,30 +1,34 @@
 ﻿using System;
 using System.Windows.Forms;
+using ICSharpCode.AvalonEdit.Editing;
 
 namespace Voice_Coding
 {
     class TrayIcon
     {
         private readonly NotifyIcon notifyIcon;
-        private readonly MenuItem exit_Item;
-        private readonly MenuItem settings;
+        private readonly MenuItem   exit_Item;
+        private readonly MenuItem   settings;
 
         public event EventHandler SettingClicked;
         public event EventHandler ExitCommand;
 
         public TrayIcon()
         {
-            exit_Item = new MenuItem();
-            settings = new MenuItem();
+            exit_Item = new MenuItem
+            {
+                Index = 0,
+                Text = "Exit"
+            };
+            exit_Item.Click += new EventHandler(OnExitCommand);
 
-            settings.Index = 0;
-            settings.Text = "Settings";
-            settings.Click += new EventHandler(OpenSettingsMenu);
-
-            exit_Item.Index = settings.Index + 1;
-            exit_Item.Text = "Exit";
-            exit_Item.Click += new EventHandler(ExitApp);
-
+            settings = new MenuItem
+            {
+                Index = exit_Item.Index - 1,
+                Text = "Settings"
+            };
+            settings.Click += new EventHandler(OnSettingClicked);
+                
             notifyIcon = new NotifyIcon
             {
                 Text = "Voice Coding",
@@ -34,24 +38,14 @@ namespace Voice_Coding
             };
         }
 
-        private void ExitApp(object sender, EventArgs e)
+        protected virtual void OnSettingClicked(object sender, EventArgs e)
         {
-            OnExitCommand(e);
+            SettingClicked(sender, e);
         }
 
-        private void OpenSettingsMenu(object sender, EventArgs e)
+        protected virtual void OnExitCommand(object sender, EventArgs e)
         {
-            OnSettingClicked(e);
-        }
-
-        protected virtual void OnSettingClicked(EventArgs e)
-        {
-            SettingClicked(this, e);
-        }
-
-        protected virtual void OnExitCommand(EventArgs e)
-        {
-            ExitCommand(this, e);
+            ExitCommand(sender, e);
         }
 
         public void Dispose()

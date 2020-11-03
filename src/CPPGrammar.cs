@@ -9,12 +9,12 @@ namespace Voice_Coding.src
         public static IDictionary<string, string> dictionary;
         //Choices for differet grammar
 
-        private static readonly GrammarBuilder includeBuilder = new GrammarBuilder();
+        private static readonly GrammarBuilder includeBuilder   = new GrammarBuilder();
         private static readonly GrammarBuilder namespaceBuilder = new GrammarBuilder();
-        private static readonly GrammarBuilder functionBuilder = new GrammarBuilder();
-        private static readonly GrammarBuilder printBuilder = new GrammarBuilder();
+        private static readonly GrammarBuilder functionBuilder  = new GrammarBuilder();
+        private static readonly GrammarBuilder printBuilder     = new GrammarBuilder();
 
-        private static Choices AllRules;
+        private static readonly Choices AllRules;
 
         static CPPGrammar()
         {
@@ -57,7 +57,9 @@ namespace Voice_Coding.src
         private static Choices GetChoice(string key)
         {
             key = key.ToUpper();
-            int startIndex = DataResource.database.IndexOf(key) + key.Length + 3;
+            int startIndex = DataResource.database.IndexOf(key)
+                             + key.Length
+                             + 3;
             int endIndex = DataResource.database.IndexOf("}", startIndex) - 2;
 
             string[] send = DataResource.database.Substring(startIndex, endIndex - startIndex).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);

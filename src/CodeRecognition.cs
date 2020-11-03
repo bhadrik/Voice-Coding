@@ -1,77 +1,52 @@
 ﻿using System;
-using System.Drawing;
 using System.Globalization;
 using System.Speech.Recognition;
 using System.Threading;
 using System.Windows;
-using System.Windows.Input;
 using WindowsInput;
 using WindowsInput.Native;
+using System.Text;
 
 namespace Voice_Coding.src
 {
     class CodeRecognition
     {
-        public bool recognizing;
-        int level = 0;
-
-        public event EventHandler ExitEvent;
-
-        //Recognizer objects
-        private readonly SpeechRecognitionEngine rec;
-
-        //To simulat keybord & mouse input
-        private readonly InputSimulator sim;
-
-        private readonly StatusBar statusBar;
+        #region Var declaration
+        public  bool                                recognizing;
+        private int                                 level = 0;
+        public  event    EventHandler               ExitEvent;
+        private readonly SpeechRecognitionEngine    rec;
+        private readonly InputSimulator             sim;
+        private readonly StatusBar                  statusBar;
+        #endregion
 
         public CodeRecognition()
         {
             //CPPGrammar.InitializeDefaultGrammer();
-
             rec = new SpeechRecognitionEngine(new CultureInfo("en-US"));
-            sim = new InputSimulator();
-
             rec.SetInputToDefaultAudioDevice();
-
-            //Loading basic grammar
             rec.LoadGrammarAsync(new Grammar(new GrammarBuilder(new Choices(
-                    DataResource.commands.Replace("\r","").Replace("\n",";").Split(';'))))
-                );
-
-            //Loading C++ grammar
+                    DataResource.commands.Replace("\r", "").Replace("\n", ";").Split(';')))){ 
+                    Name = "Commands"
+            });
             rec.LoadGrammarAsync(CPPGrammar.GetGrammar);
 
             //All event handler
             rec.SpeechRecognized +=
-                new EventHandler<SpeechRecognizedEventArgs>(Rec_Recognised);
+                new EventHandler<SpeechRecognizedEventArgs>   (Rec_Recognised);
             rec.SpeechDetected +=
-                new EventHandler<SpeechDetectedEventArgs>(Rec_Detected);
+                new EventHandler<SpeechDetectedEventArgs>     (Rec_Detected);
             rec.RecognizeCompleted +=
-                new EventHandler<RecognizeCompletedEventArgs>(Rec_Completed);
+                new EventHandler<RecognizeCompletedEventArgs> (Rec_Completed);
             rec.AudioLevelUpdated +=
-                new EventHandler<AudioLevelUpdatedEventArgs>(Rec_AudioUpdate);
+                new EventHandler<AudioLevelUpdatedEventArgs>  (Rec_AudioUpdate);
 
-            //INPUT Simpulation
-            /*
-            Thread.Sleep(3000);
-            rec.EmulateRecognizeAsync("include iostream");
-            Thread.Sleep(3000);
-            rec.EmulateRecognizeAsync("using_namespace standard");
-            Thread.Sleep(500);
-            rec.EmulateRecognizeAsync("function void main");
-            Thread.Sleep(500);
-            rec.EmulateRecognizeAsync("printline string This string is going to be printed");
-            Thread.Sleep(500);
-            rec.EmulateRecognizeAsync("printf variable date");
-            Thread.Sleep(500);
-            rec.EmulateRecognizeAsync("function int recognized");
-            Thread.Sleep(500);
-            */
+            sim = new InputSimulator();
 
-            statusBar = new StatusBar();
+            statusBar                    = new StatusBar();
             statusBar.Show();
-            statusBar.toggleRecogniton += new EventHandler < RoutedEventArgs > (OnToggle);
+            statusBar.ToggleRecogniton  += new EventHandler<RoutedEventArgs>(OnToggle);
+            statusBar.Exit              += new EventHandler<RoutedEventArgs>(OnExitEvent);
         }
 
         private void Rec_Recognised(object sender, SpeechRecognizedEventArgs e)
@@ -87,13 +62,13 @@ namespace Voice_Coding.src
                 data = e.Result.Text.Replace(words[0] + " " + words[1] + " ", "");
             }
 
-            statusBar.changeText($"{e.Result.Text} [{e.Result.Confidence}] [{e.Result.Grammar.Name}]");
+            statusBar.ChangeText($"{e.Result.Text} [{e.Result.Confidence}] [{e.Result.Grammar.Name}]");
 
             switch (words[0])
             {
                 //INCLUDE "file_name"  2
                 case "include":
-                    sim.Keyboard.TextEntry($"#include < {rslt} >\r");
+                    sim.Keyboard.TextEntry(Encoding.UTF8.GetString(Encoding.UTF8.GetBytes($"#include < {rslt} >\r")));
                     break;
 
                 //USING_NAMESPACE "name_of_namespace"  2
@@ -103,13 +78,13 @@ namespace Voice_Coding.src
 
                 //FUNCTION "data_type" "Function_name" 3
                 case "function":
-                    sim.Keyboard.TextEntry(rslt + " " + words[2] + "()\r{\r\t\r}\r");
+                    level++;
+                    sim.Keyboard.TextEntry(rslt + " " + words[2] + "()\r{\r" + Tab(level) + "\r}\r");
                     sim.Keyboard.KeyPress(
                         new VirtualKeyCode[] {
                             VirtualKeyCode.UP,
                             VirtualKeyCode.UP
                         });
-                    level++;
                     break;
 
                 //PRINT_LINE STRING/VAR "data_to_be_printed"  3
@@ -179,18 +154,21 @@ namespace Voice_Coding.src
                 case "stop":
                     rec.RecognizeAsyncCancel();
                     recognizing = false;
+                    statusBar.ToggleColor(recognizing);
                     break;
 
                 case "exit":
-                    OnExitEvent();
+                    OnExitEvent(this, new RoutedEventArgs());
                     break;
             }
-
-            for(int i=0; i<level; i++)
-                sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
-
-            level = 0;
         }
+
+        protected virtual void OnExitEvent(object sender, RoutedEventArgs e)
+        {
+            ExitEvent?.Invoke(sender, e);
+        }
+
+        #region Private function
 
         private void Rec_Detected(object sender, SpeechDetectedEventArgs e)
         {
@@ -206,7 +184,7 @@ namespace Voice_Coding.src
         private void Rec_AudioUpdate(object obj, AudioLevelUpdatedEventArgs e)
         {
             int maxBordersize = 7;
-            statusBar.toggleBtn.BorderThickness = new Thickness(e.AudioLevel*maxBordersize/100);
+            statusBar.toggleBtn.BorderThickness = new Thickness(e.AudioLevel*maxBordersize/100 + 3);
         }
 
         private string FindInDictionary(string value)
@@ -215,14 +193,6 @@ namespace Voice_Coding.src
                 return str;
             else
                 return "<NotFound>";
-        }
-
-        //----------------------------------------------------------------------------------------
-
-        protected virtual void OnExitEvent()
-        {
-            if (ExitEvent != null)
-                ExitEvent(this, EventArgs.Empty);
         }
 
         private void OnToggle(object src, RoutedEventArgs e)
@@ -237,10 +207,21 @@ namespace Voice_Coding.src
                 recognizing = true;
                 statusBar.status.Content = "I'm listening...";
             }
-            statusBar.toggleColor(recognizing);
+            statusBar.ToggleColor(recognizing);
         }
 
-        //----------------------------------------------------------------------------------------
+        private string Tab(int level)
+        {
+            string str = null;
+            for (int i = 0; i < level; i++)
+                str += '\t';
+            Console.WriteLine(str.Replace("\t","TAB"));
+            return str;
+        }
+
+        #endregion
+
+        #region Public function
 
         public void StartRecognition(bool emulate)
         {
@@ -278,5 +259,7 @@ namespace Voice_Coding.src
             StopRecognition();
             statusBar.Close();
         }
+
+        #endregion
     }
 }
