@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Voice_Coding"
         mc:Ignorable="d"
         
-        Title="MainWindow" Height="100" Width="200" ResizeMode="NoResize" WindowStyle="None" Background="#FF9A9A9A" WindowStartupLocation="Manual" Left="0" Top="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="Visible" ShowInTaskbar="False" Icon="VoiceCoding_72.png">
+        Title="MainWindow" Height="100" Width="200" ResizeMode="NoResize" WindowStyle="None" Background="#FF9A9A9A" WindowStartupLocation="Manual" Left="0" Top="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" Visibility="Hidden" ShowInTaskbar="False" Icon="VoiceCoding_72.png">
     <Window.Resources>
         <Style x:Key="NonFocus" TargetType="ComboBox">
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>

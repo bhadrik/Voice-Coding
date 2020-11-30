@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using ICSharpCode.AvalonEdit.Editing;
 
 namespace Voice_Coding
 {
