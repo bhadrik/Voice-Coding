@@ -36,3 +36,10 @@ steps:
   inputs:
     buildType: 'current'
     targetPath: '$(Pipeline.Workspace)'
+
+- task: CopyPublishBuildArtifacts@1
+  inputs:
+    CopyRoot: '$(Agent.BuildDirectory)'
+    Contents: '/'
+    ArtifactName: 'Arti_ONe'
+    ArtifactType: 'Container'
