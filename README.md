@@ -1,5 +1,5 @@
-[![License](https://img.shields.io/github/license/bhadrik/Voice-Coding?color=brightgreen&style=flat-square)](https://opensource.org/licenses/MIT)
 [![Build Status](https://dev.azure.com/jagadbhadrik4/Voice%20coding/_apis/build/status/Voice-Coding?branchName=master)](https://dev.azure.com/jagadbhadrik4/Voice%20coding/_build/latest?definitionId=3&branchName=master)
+[![License](https://img.shields.io/github/license/bhadrik/voice-coding?color=brightgreen)](https://opensource.org/licenses/MIT)
 # Voice-Coding
 It uses voice commands to write a particular line or block of code. It is a simple background service that Continuously takes voice input from the user and writes appropriate code into the editor currently selected. It makes programming easy to write and increase production speed. 😃
 
