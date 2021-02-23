@@ -22,7 +22,7 @@ namespace Voice_Coding {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class DataResource {
+    internal class DataResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Voice_Coding {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Voice_Coding.DataResource", typeof(DataResource).Assembly);
@@ -51,7 +51,7 @@ namespace Voice_Coding {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,99 +61,9 @@ namespace Voice_Coding {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello
-        ///undo
-        ///up
-        ///down
-        ///left
-        ///right
-        ///newline
-        ///tab
-        ///erase
-        ///clear
-        ///back
-        ///stop
-        ///exit.
-        /// </summary>
-        public static string commands {
-            get {
-                return ResourceManager.GetString("commands", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to void:void
-        ///integer:int
-        ///int:int
-        ///char:char
-        ///character:char
-        ///boolean:bool
-        ///float:float
-        ///double:double
-        ///input_output_stream:iostream
-        ///io_stream:iostream
-        ///standard_lib:cstdlib
-        ///stdlib:cstdlib
-        ///maths:cmaths
-        ///string:cout&lt;&lt;&quot;&quot;&lt;&lt;;
-        ///var:cout&lt;&lt;&lt;&lt;endl;
-        ///variable:cout&lt;&lt;&lt;&lt;endl;
-        ///standard:std
-        ///code_recognition:CodeRecognition.
-        /// </summary>
-        public static string data {
-            get {
-                return ResourceManager.GetString("data", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to DATATYPE{
-        ///void
-        ///integer
-        ///int
-        ///char
-        ///character
-        ///boolean
-        ///float
-        ///double
-        ///}
-        ///
-        ///HEADERFILES{
-        ///io_stream
-        ///input_output_stream
-        ///standard_lib
-        ///stdlib
-        ///maths
-        ///string
-        ///code_recognition
-        ///}
-        ///
-        ///PRINTSTYLE{
-        ///print_line
-        ///print
-        ///}
-        ///
-        ///PRINTVALUE{
-        ///var
-        ///variable
-        ///string
-        ///}
-        ///
-        ///NAMESPACE{
-        ///standard
-        ///}.
-        /// </summary>
-        public static string database {
-            get {
-                return ResourceManager.GetString("database", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        public static System.Drawing.Icon icon_tray_b_w {
+        internal static System.Drawing.Icon icon_tray_b_w {
             get {
                 object obj = ResourceManager.GetObject("icon_tray_b_w", resourceCulture);
                 return ((System.Drawing.Icon)(obj));

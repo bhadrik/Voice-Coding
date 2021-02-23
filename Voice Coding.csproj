@@ -15,6 +15,8 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -110,13 +112,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="DataResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DataResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DataResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>DataResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -128,22 +130,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\commands.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="res\Icon\icon_tray_b&amp;w.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="res\database.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="res\data.txt" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="VoiceCoding_72.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="res\MainResource.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

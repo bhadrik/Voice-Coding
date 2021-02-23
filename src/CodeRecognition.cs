@@ -6,6 +6,7 @@ using System.Windows;
 using WindowsInput;
 using WindowsInput.Native;
 using System.Text;
+using System.Xml;
 
 namespace Voice_Coding.src
 {
@@ -22,13 +23,28 @@ namespace Voice_Coding.src
 
         public CodeRecognition()
         {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(@"D:\Coding Project\Voice Coding\res\MainResource.xml");
+
+            XmlNodeList nodeList = doc.GetElementsByTagName("Command");
+
+            string[] cmd = new string[nodeList.Count];
+            int i = 0;
+            foreach (XmlNode node in nodeList)
+            {
+                cmd[i] = node.Attributes["value"]?.InnerText;
+                i++;
+            }
+
+
             //CPPGrammar.InitializeDefaultGrammer();
             rec = new SpeechRecognitionEngine(new CultureInfo("en-US"));
             rec.SetInputToDefaultAudioDevice();
-            rec.LoadGrammarAsync(new Grammar(new GrammarBuilder(new Choices(
-                    DataResource.commands.Replace("\r", "").Replace("\n", ";").Split(';')))){ 
-                    Name = "Commands"
-            });
+            //rec.LoadGrammarAsync(new Grammar(new GrammarBuilder(new Choices(
+            //        DataResource.commands.Replace("\r", "").Replace("\n", ";").Split(';')))){ 
+            //        Name = "Commands"
+            //});
+            rec.LoadGrammarAsync(new Grammar(new GrammarBuilder(new Choices(cmd))));
             rec.LoadGrammarAsync(CPPGrammar.GetGrammar);
 
             //All event handler
@@ -68,7 +84,7 @@ namespace Voice_Coding.src
             {
                 //INCLUDE "file_name"  2
                 case "include":
-                    sim.Keyboard.TextEntry(Encoding.UTF8.GetString(Encoding.UTF8.GetBytes($"#include < {rslt} >\r")));
+                    sim.Keyboard.TextEntry(Encoding.UTF8.GetString(Encoding.UTF8.GetBytes($"#include < {words[1]} >\r")));
                     break;
 
                 //USING_NAMESPACE "name_of_namespace"  2
