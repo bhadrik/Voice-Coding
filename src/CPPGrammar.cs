@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Speech.Recognition;
 using System.Xml;
 using System.IO;

@@ -6,7 +6,7 @@
 	<Namespace name="Standard" value="std"/>
 	
 	<Datatype name="integer" value="int"/>
-	<Datatype name="intr" value="int"/>
+	<Datatype name="int" value="int"/>
 	<Datatype name="boolean" value="bool"/>
 	<Datatype name="bool" value="bool"/>
 	<Datatype name="float" value="float"/>
