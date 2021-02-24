@@ -69,5 +69,28 @@ namespace Voice_Coding {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+        ///&lt;VoiceCoding&gt;
+        ///	
+        ///	&lt;HeaderFiles name=&quot;Path&quot; value=&quot;C:\\cygwin64\\lib\\gcc\\x86_64-pc-cygwin\\10\\include&quot;/&gt;
+        ///	
+        ///	&lt;Namespace name=&quot;Standard&quot; value=&quot;std&quot;/&gt;
+        ///	
+        ///	&lt;Datatype name=&quot;integer&quot; value=&quot;int&quot;/&gt;
+        ///	&lt;Datatype name=&quot;int&quot; value=&quot;int&quot;/&gt;
+        ///	&lt;Datatype name=&quot;boolean&quot; value=&quot;bool&quot;/&gt;
+        ///	&lt;Datatype name=&quot;bool&quot; value=&quot;bool&quot;/&gt;
+        ///	&lt;Datatype name=&quot;float&quot; value=&quot;float&quot;/&gt;
+        ///	&lt;Datatype name=&quot;floating point&quot; value=&quot;float&quot;/&gt;
+        ///	&lt;Datatype name=&quot;double&quot; value=&quot;double&quot;/&gt;
+        ///	&lt;Datatype name=&quot;voi [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string MainResource {
+            get {
+                return ResourceManager.GetString("MainResource", resourceCulture);
+            }
+        }
     }
 }
