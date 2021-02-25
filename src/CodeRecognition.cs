@@ -19,20 +19,22 @@ namespace Voice_Coding.src
         private readonly SpeechRecognitionEngine    rec;
         private readonly InputSimulator             sim;
         private readonly StatusBar                  statusBar;
+        private readonly string[] cmd;
         #endregion
 
         public CodeRecognition()
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(@"D:\Coding Project\Voice Coding\res\MainResource.xml");
+            doc.Load(@"..\..\res\MainResource.xml");
 
             XmlNodeList nodeList = doc.GetElementsByTagName("Command");
 
-            string[] cmd = new string[nodeList.Count];
+            cmd = new string[nodeList.Count];
+
             int i = 0;
             foreach (XmlNode node in nodeList)
             {
-                cmd[i] = node.Attributes["value"]?.InnerText;
+                cmd[i] = node.Attributes["value"].Value;
                 i++;
             }
 
@@ -40,12 +42,8 @@ namespace Voice_Coding.src
             //CPPGrammar.InitializeDefaultGrammer();
             rec = new SpeechRecognitionEngine(new CultureInfo("en-US"));
             rec.SetInputToDefaultAudioDevice();
-            //rec.LoadGrammarAsync(new Grammar(new GrammarBuilder(new Choices(
-            //        DataResource.commands.Replace("\r", "").Replace("\n", ";").Split(';')))){ 
-            //        Name = "Commands"
-            //});
             rec.LoadGrammarAsync(new Grammar(new GrammarBuilder(new Choices(cmd))));
-            rec.LoadGrammarAsync(CPPGrammar.GetGrammar);
+            rec.LoadGrammarAsync(new CPPGrammar().GetGrammar);
 
             //All event handler
             rec.SpeechRecognized +=
@@ -274,6 +272,22 @@ namespace Voice_Coding.src
         {
             StopRecognition();
             statusBar.Close();
+        }
+
+        public void ReloadGrammar()
+        {
+            if(recognizing)
+            rec.RecognizeAsyncCancel();
+
+            rec.UnloadAllGrammars();
+
+            rec.LoadGrammar(new Grammar(new GrammarBuilder(new Choices(cmd))));
+            rec.LoadGrammar(new CPPGrammar().GetGrammar);
+
+            if (recognizing)
+            rec.RecognizeAsync(RecognizeMode.Multiple);
+
+            Console.WriteLine("Reload Complete");
         }
 
         #endregion

@@ -4,19 +4,14 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using Voice_Coding.src;
+using System.Windows.Input;
+using System.Xml;
 
 namespace Voice_Coding
 {
     public partial class MainWindow : Window
     {
-        //int level = 0;
-
         private readonly CodeRecognition rec;
-        private enum ClassType
-        {
-            MenuItem,
-            StatusBar,
-        }
 
 #if Notify
         //Tray icon
@@ -40,6 +35,24 @@ namespace Voice_Coding
             notifyIcon.ExitCommand += new EventHandler(ExitApp);
 #endif
             this.Closing += new CancelEventHandler(ClosingWindow);
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(DataResource.MainResource);
+
+            XmlNodeList nodes = doc.GetElementsByTagName("HeaderFiles");
+
+            foreach(XmlNode node in nodes)
+            {
+                if(node.Attributes["type"].Value == "custom")
+                {
+                    IncluedPath.Text = node.Attributes["value"].Value;
+                    break;
+                }
+            }
+
+            IncluedPath.KeyUp += new KeyEventHandler(OnKeyUp);
+
+            ReloadBtn.Click += new RoutedEventHandler(OnReloadClick);
         }
 
         private void ClosingWindow(object sender, CancelEventArgs e)
@@ -63,6 +76,49 @@ namespace Voice_Coding
         private void HideToTray(object sender, EventArgs e)
         {
             this.Hide();
+        }
+
+        private void OnKeyUp(object sender, KeyEventArgs key)
+        {
+            if (key.Key == Key.Enter)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(DataResource.MainResource);
+
+                XmlNodeList nodes = doc.GetElementsByTagName("HeaderFiles");
+
+                foreach(XmlNode node in nodes)
+                {
+                    if (node.Attributes["type"].Value.Equals("custom"))
+                    {
+                        node.Attributes["value"].Value = IncluedPath.Text;
+                        Console.WriteLine("Changed text:" + IncluedPath.Text);
+                        break;
+                    }
+                }
+                doc.Save(@"..\..\res\MainResource.xml");
+                rec.ReloadGrammar();
+            }
+        }
+
+        private void OnReloadClick(object sender, EventArgs e)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(@"..\..\res\MainResource.xml");
+
+            XmlNodeList nodes = doc.GetElementsByTagName("HeaderFiles");
+
+            foreach (XmlNode node in nodes)
+            {
+                if (node.Attributes["type"].Value.Equals("custom"))
+                {
+                    node.Attributes["value"].Value = IncluedPath.Text;
+                    Console.WriteLine("Changed text:" + IncluedPath.Text);
+                    break;
+                }
+            }
+            doc.Save(@"..\..\res\MainResource.xml");
+            rec.ReloadGrammar();
         }
     }
 }

@@ -1,37 +1,35 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <VoiceCoding>
-	
-	<HeaderFiles name="Path" value="C:\\cygwin64\\lib\\gcc\\x86_64-pc-cygwin\\10\\include"/>
-	
-	<Namespace name="Standard" value="std"/>
-	
-	<Datatype name="integer" value="int"/>
-	<Datatype name="int" value="int"/>
-	<Datatype name="boolean" value="bool"/>
-	<Datatype name="bool" value="bool"/>
-	<Datatype name="float" value="float"/>
-	<Datatype name="floating point" value="float"/>
-	<Datatype name="double" value="double"/>
-	<Datatype name="void" value="void"/>
-	
-	<PrintStyle name="print_line" value="pirnt_line"/>
-	<PrintStyle name="print" value="pirnt"/>
-	
-	<PrintValue name="var" value="cout endl;"/>
-	<PrintValue name="variable" value="cout  endl;"/>
-	<PrintValue name="string" value="cout ;"/>
-	
-	<Command name="Hello" value="hello"/>
-	<Command name="Up" value="up"/>
-	<Command name="Down" value="down"/>
-	<Command name="Left" value="left"/>
-	<Command name="Right" value="right"/>
-	<Command name="New Line" value="newline"/>
-	<Command name="Tab" value="tab"/>
-	<Command name="Erase" value="erase"/>
-	<Command name="Clear" value="clear"/>
-	<Command name="Back" value="back"/>
-	<Command name="Stop" value="stop"/>
-	<Command name="Exit" value="exit"/>
-
+  <HeaderFiles name="Path" type="custom" value="C:\cygwin64\lib\gcc\x86_64-pc-cygwin\10\include" />
+  <HeaderFiles name="Path" type="default" value="C:\cygwin64\lib\gcc\x86_64-pc-cygwin\10\include" />
+  <Namespace name="Standard" value="std" />
+  <Datatypes>
+    <Datatype name="integer" value="int" />
+    <Datatype name="int" value="int" />
+    <Datatype name="boolean" value="bool" />
+    <Datatype name="bool" value="bool" />
+    <Datatype name="float" value="float" />
+    <Datatype name="floating point" value="float" />
+    <Datatype name="double" value="double" />
+    <Datatype name="void" value="void" />
+  </Datatypes>
+  <PrintStyle name="print_line" value="pirnt_line" />
+  <PrintStyle name="print" value="pirnt" />
+  <PrintValue name="var" value="cout endl;" />
+  <PrintValue name="variable" value="cout  endl;" />
+  <PrintValue name="string" value="cout ;" />
+  <Commands>
+    <Command name="Hello" value="hello" />
+    <Command name="Up" value="up" />
+    <Command name="Down" value="down" />
+    <Command name="Left" value="left" />
+    <Command name="Right" value="right" />
+    <Command name="New Line" value="newline" />
+    <Command name="Tab" value="tab" />
+    <Command name="Erase" value="erase" />
+    <Command name="Clear" value="clear" />
+    <Command name="Back" value="back" />
+    <Command name="Stop" value="stop" />
+    <Command name="Exit" value="exit" />
+  </Commands>
 </VoiceCoding>

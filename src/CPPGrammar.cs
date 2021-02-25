@@ -2,10 +2,11 @@
 using System.Speech.Recognition;
 using System.Xml;
 using System.IO;
+using System;
 
 namespace Voice_Coding.src
 {
-    static class CPPGrammar
+    class CPPGrammar
     {
         public static IDictionary<string, string> dictionary;
         //Choices for differet grammar
@@ -19,48 +20,54 @@ namespace Voice_Coding.src
             PrintValue
         }
 
-        private static readonly GrammarBuilder includeBuilder   = new GrammarBuilder();
-        private static readonly GrammarBuilder namespaceBuilder = new GrammarBuilder();
-        private static readonly GrammarBuilder functionBuilder  = new GrammarBuilder();
-        private static readonly GrammarBuilder printBuilder     = new GrammarBuilder();
+        private readonly GrammarBuilder[] Builder;
 
-        private static readonly Choices AllRules;
+        private readonly Choices AllRules;
 
-        static CPPGrammar()
+        private readonly Choices defaultChoice = new Choices(new string[] { "<Default Choice>" });
+
+        public CPPGrammar()
         {
             dictionary = new Dictionary<string, string>();
 
-            includeBuilder = new GrammarBuilder();
-            includeBuilder.Append("include");
-            includeBuilder.Append(GetChoice(Attribute.HeaderFiles));
+            Builder = new GrammarBuilder[5];
 
-            namespaceBuilder = new GrammarBuilder();
-            namespaceBuilder.Append("using_namespace");
-            namespaceBuilder.Append(GetChoice(Attribute.Namespace));
+            //Include builder
+            Builder[0] = new GrammarBuilder();
+            Builder[0].Append("include");
+            Builder[0].Append(GetChoice(Attribute.HeaderFiles));
 
-            functionBuilder = new GrammarBuilder();
-            functionBuilder.Append("function");
-            functionBuilder.Append(GetChoice(Attribute.Datatype));
-            functionBuilder.AppendDictation();
+            //Namespace builder
+            Builder[1] = new GrammarBuilder();
+            Builder[1].Append("using_namespace");
+            Builder[1].Append(GetChoice(Attribute.Namespace));
 
-            printBuilder = new GrammarBuilder();
-            printBuilder.Append(GetChoice(Attribute.PrintStyle));
-            printBuilder.Append(GetChoice(Attribute.PrintValue));
-            printBuilder.AppendDictation();
+            //Function builder
+            Builder[2] = new GrammarBuilder();
+            Builder[2].Append("function");
+            Builder[2].Append(GetChoice(Attribute.Datatype));
+            Builder[2].AppendDictation();
 
-            AllRules = new Choices(
-                new GrammarBuilder[] {
-                    includeBuilder,
-                    namespaceBuilder,
-                    functionBuilder,
-                    printBuilder
-                });
+            //Print builder
+            Builder[3] = new GrammarBuilder();
+            Builder[3].Append(GetChoice(Attribute.PrintStyle));
+            Builder[3].Append(GetChoice(Attribute.PrintValue));
+            Builder[3].AppendDictation();
+
+            //Variable builder
+            Builder[4] = new GrammarBuilder();
+            Builder[4].Append("add");
+            Builder[4].Append(GetChoice(Attribute.Datatype));
+            Builder[4].AppendDictation();
+
+            AllRules = new Choices(Builder);
         }
 
-        private static Choices GetChoice(Attribute attribute)
+        private Choices GetChoice(Attribute attribute)
         {
             XmlDocument doc = new XmlDocument();
-            doc.LoadXml(DataResource.MainResource);
+            //doc.LoadXml(DataResource.MainResource);
+            doc.Load(@"..\..\res\MainResource.xml");
 
             XmlNodeList nodeList = doc.GetElementsByTagName(attribute.ToString());
 
@@ -70,9 +77,17 @@ namespace Voice_Coding.src
             {
                 foreach (XmlNode node in nodeList)
                 {
-                    if (node.Attributes["name"]?.InnerText == "Path")
+                    if (node.Attributes["name"].Value.Equals("Path") && node.Attributes["type"].Value.Equals("custom"))
                     {
-                        DirectoryInfo dir = new DirectoryInfo(node.Attributes["value"]?.InnerText);
+                        Console.WriteLine("Reading:" + node.Attributes["value"].Value);
+                        DirectoryInfo dir = new DirectoryInfo(node.Attributes["value"].Value);
+
+                        if (!dir.Exists)
+                        {
+                            Console.WriteLine("Directory not found, please provide existing directory path");
+                            return defaultChoice;
+                        }
+
                         DirectoryInfo[] dirArray = new DirectoryInfo[] { dir };
                         AddToList(dirArray, dataList);
                     }
@@ -82,19 +97,19 @@ namespace Voice_Coding.src
             {
                 foreach (XmlNode node in nodeList)
                 {
-                    dictionary.Add(node.Attributes["name"]?.InnerText, node.Attributes["value"]?.InnerText);
-                    dataList.Add(node.Attributes["name"]?.InnerText);
+                    if(!dictionary.ContainsKey(node.Attributes["name"].Value))
+                    dictionary.Add(node.Attributes["name"].Value, node.Attributes["value"].Value);
+                    dataList.Add(node.Attributes["name"].Value);
                 }
             }
 
             string[] str = new string[dataList.Count];
-            int tlength = str.Length;
             dataList.CopyTo(str);
 
             return new Choices(str);
         }
 
-        public static Grammar GetGrammar
+        public Grammar GetGrammar
         {
             get {
                 Grammar grammar = new Grammar(AllRules)
@@ -105,7 +120,7 @@ namespace Voice_Coding.src
             }
         }
 
-        private static void AddToList(DirectoryInfo[] directoryInfos, SortedSet<string> list)
+        private void AddToList(DirectoryInfo[] directoryInfos, SortedSet<string> list)
         {
             if(directoryInfos.Length == 0)
             {
