@@ -7,7 +7,7 @@ It uses voice commands to write a particular line or block of code. It is a simp
 Open up the project in Visual Studio, then build & run it.
 It will automatically start listening so open up any text editor like Notepad etc. now use following commands(speak command).
 
-# Commands only for c++
+# Commands only for C++
 | Command  | Description |
 | ------------- | ------------- |
 | include <file name>  | ex. say: "inclued  iostream" |
@@ -24,4 +24,4 @@ It will automatically start listening so open up any text editor like Notepad et
 | clear | Similar to press ctrl+A and backspace |
 | back | Similar to press BACKSPACE in keybord |
 | stop | Stop listening, and toggle listening by single clicking on statusbar button |
-| exit | Similar to pressing close buttone of this window |
+| exit | Similar to pressing close button of this window |
