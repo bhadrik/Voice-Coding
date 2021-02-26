@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define debug
+
+using System;
 using System.Globalization;
 using System.Speech.Recognition;
 using System.Threading;
@@ -25,7 +27,11 @@ namespace Voice_Coding.src
         public CodeRecognition()
         {
             XmlDocument doc = new XmlDocument();
+#if debug
             doc.Load(@"..\..\res\MainResource.xml");
+#else
+            doc.Load(@"Resources\MainResource.xml");
+#endif
 
             XmlNodeList nodeList = doc.GetElementsByTagName("Command");
 
@@ -37,7 +43,6 @@ namespace Voice_Coding.src
                 cmd[i] = node.Attributes["value"].Value;
                 i++;
             }
-
 
             //CPPGrammar.InitializeDefaultGrammer();
             rec = new SpeechRecognitionEngine(new CultureInfo("en-US"));

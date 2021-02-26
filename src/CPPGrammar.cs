@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿//#define debug
+
+using System.Collections.Generic;
 using System.Speech.Recognition;
 using System.Xml;
 using System.IO;
@@ -66,8 +68,12 @@ namespace Voice_Coding.src
         private Choices GetChoice(Attribute attribute)
         {
             XmlDocument doc = new XmlDocument();
-            //doc.LoadXml(DataResource.MainResource);
+
+#if debug
             doc.Load(@"..\..\res\MainResource.xml");
+#else
+            doc.Load(@"Resources\MainResource.xml");
+#endif
 
             XmlNodeList nodeList = doc.GetElementsByTagName(attribute.ToString());
 

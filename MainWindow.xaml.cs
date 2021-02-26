@@ -1,4 +1,5 @@
 ﻿#define Notify
+//#define debug
 
 using System;
 using System.ComponentModel;
@@ -37,7 +38,11 @@ namespace Voice_Coding
             this.Closing += new CancelEventHandler(ClosingWindow);
 
             XmlDocument doc = new XmlDocument();
-            doc.LoadXml(DataResource.MainResource);
+#if debug
+            doc.Load(@"..\..\res\MainResource.xml");
+#else
+            doc.Load(@"Resources\MainResource.xml");
+#endif
 
             XmlNodeList nodes = doc.GetElementsByTagName("HeaderFiles");
 
@@ -96,7 +101,11 @@ namespace Voice_Coding
                         break;
                     }
                 }
+#if debug
                 doc.Save(@"..\..\res\MainResource.xml");
+#else
+                doc.Save(@"Resources\MainResource.xml");
+#endif
                 rec.ReloadGrammar();
             }
         }
@@ -117,7 +126,11 @@ namespace Voice_Coding
                     break;
                 }
             }
+#if debug
             doc.Save(@"..\..\res\MainResource.xml");
+#else
+            doc.Save(@"Resources\MainResource.xml");
+#endif
             rec.ReloadGrammar();
         }
     }
