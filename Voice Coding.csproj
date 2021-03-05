@@ -15,6 +15,8 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -38,7 +40,15 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.1.278, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -56,26 +66,15 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WindowsInput, Version=1.0.4.0, Culture=neutral, PublicKeyToken=9b287f7dc5073cad, processorArchitecture=MSIL">
-      <HintPath>packages\InputSimulator.1.0.4.0\lib\net20\WindowsInput.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DataResource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DataResource.resx</DependentUpon>
-    </Compile>
-    <Compile Include="TrayIcon.cs" />
-    <Compile Include="src\CodeRecognition.cs" />
-    <Compile Include="src\CPPGrammar.cs" />
-    <Compile Include="StatusBar.xaml.cs">
-      <DependentUpon>StatusBar.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Source\TrayIcon.cs" />
+    <Compile Include="Source\CodeRecognition.cs" />
+    <Compile Include="Source\CPPGrammar.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -88,10 +87,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="StatusBar.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -111,11 +106,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="DataResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>DataResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="packages\AvalonEdit.6.0.1\.signature.p7s" />
+    <None Include="packages\AvalonEdit.6.0.1\AvalonEdit.6.0.1.nupkg" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -125,22 +118,43 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\commands.txt" />
+    <Resource Include="Resource\Images\close.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\Icon\icon_tray_b&amp;w.ico" />
+    <Resource Include="Resource\MainResource.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="res\database.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="res\data.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="VoiceCoding_72.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="close.png" />
+    <Content Include="packages\AvalonEdit.6.0.1\lib\net40\ICSharpCode.AvalonEdit.dll" />
+    <Resource Include="Resource\Icon\Wrap.png" />
+    <Resource Include="Resource\Icon\Voice Coding\128.png" />
+    <Resource Include="Resource\Icon\Voice Coding\16.png" />
+    <Resource Include="Resource\Icon\Voice Coding\256.png" />
+    <Resource Include="Resource\Icon\Voice Coding\32.png" />
+    <Resource Include="Resource\Icon\Voice Coding\48.png" />
+    <Resource Include="Resource\Icon\Voice Coding\96.png" />
+    <Resource Include="Resource\Icon\Voice Coding\ico\128.ico" />
+    <Resource Include="Resource\Icon\Voice Coding\ico\16.ico" />
+    <Resource Include="Resource\Icon\Voice Coding\ico\32.ico" />
+    <Resource Include="Resource\Icon\Voice Coding\ico\48.ico" />
+    <Resource Include="Resource\Icon\Voice Coding\ico\96.ico" />
+    <Resource Include="Resource\Icon\Voice Coding\ico\Voice_coding_B&amp;W.ico" />
+    <Resource Include="Resource\Icon\Voice Coding\Voice_coding.ico" />
+    <Resource Include="Resource\Icon\Delet.png" />
+    <Resource Include="Resource\Icon\Past.png" />
+    <Content Include="Resource\Icon\Voice Coding\Voice_coding.svg" />
+    <Content Include="Resource\Icon\Voice Coding\Voice_coding_B&amp;W.svg" />
+    <Content Include="Resource\Icon\Voice Coding\Voice_coding_ink.svg" />
+    <Resource Include="Resource\Icon\Copy.png" />
+    <Resource Include="Resource\Icon\Cut.png" />
+    <Resource Include="Resource\Icon\Open.png" />
+    <Resource Include="Resource\Icon\Redo.png" />
+    <Resource Include="Resource\Icon\Save.png" />
+    <Resource Include="Resource\Icon\Undo.png" />
+    <Resource Include="packages\AvalonEdit.6.0.1\lib\net40\ICSharpCode.AvalonEdit.xml" />
+    <Content Include="packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.dll" />
+    <Resource Include="packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.xml" />
+    <Content Include="packages\AvalonEdit.6.0.1\lib\netcoreapp3.0\ICSharpCode.AvalonEdit.dll" />
+    <Resource Include="packages\AvalonEdit.6.0.1\lib\netcoreapp3.0\ICSharpCode.AvalonEdit.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

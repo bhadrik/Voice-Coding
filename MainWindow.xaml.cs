@@ -1,68 +1,108 @@
-﻿#define Notify
-
-using System;
-using System.ComponentModel;
+﻿using System;
+using System.IO;
 using System.Windows;
-using Voice_Coding.src;
+using System.Windows.Input;
+using System.Windows.Forms;
+using System.ComponentModel;
+using Voice_Coding.Source;
+
+using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Folding;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Search;
+using Microsoft.Win32;
 
 namespace Voice_Coding
 {
-    public partial class MainWindow : Window
-    {
-        //int level = 0;
+	/// <summary>
+	/// Interaction logic for MainWindow.xaml
+	/// </summary>
+	///
+	public partial class MainWindow : Window
+	{
+		private readonly CodeRecognition Recogniser;
 
-        private readonly CodeRecognition rec;
-        private enum ClassType
-        {
-            MenuItem,
-            StatusBar,
-        }
+		public MainWindow()
+		{
+			InitializeComponent();
+			Recogniser = new CodeRecognition(this);
+			Recogniser.StartRecognition(false);
 
-#if Notify
-        //Tray icon
-        private readonly TrayIcon notifyIcon;
-#endif
+			//textEditor.GotKeyboardFocus += new KeyboardFocusChangedEventHandler(OnGotKeyboardFocus);
+			textEditor.LostKeyboardFocus += new KeyboardFocusChangedEventHandler(OnLostKeyboardFocus);
+			this.Closing += new CancelEventHandler(OnExitEvent);
+		}
 
-        public MainWindow()
-        {
-            InitializeComponent();
-            //Set window to the bottom right corner
-            Left = SystemParameters.WorkArea.Width - Width - 10;
-            Top = SystemParameters.WorkArea.Height - Height - 10;
+		string currentFileName;
 
-            rec = new CodeRecognition();
-            rec.StartRecognition(false);
-            rec.ExitEvent += new EventHandler(ExitApp);
+		void OpenFileClick(object sender, RoutedEventArgs e)
+		{
+			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog
+			{
+				CheckFileExists = true
+			};
 
-#if Notify
-            notifyIcon = new TrayIcon();
-            notifyIcon.SettingClicked += new EventHandler(OpenSettingsMenu);
-            notifyIcon.ExitCommand += new EventHandler(ExitApp);
-#endif
-            this.Closing += new CancelEventHandler(ClosingWindow);
-        }
+			if (dlg.ShowDialog() ?? false)
+			{
+				currentFileName = dlg.FileName;
+				textEditor.Load(currentFileName);
+				textEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinitionByExtension(Path.GetExtension(currentFileName));
+			}
+		}
 
-        private void ClosingWindow(object sender, CancelEventArgs e)
-        {
-#if Notify
-            notifyIcon.Dispose();
-#endif
-            rec.Close();
-        }
+		void SaveFileClick(object sender, EventArgs e)
+		{
+			if (currentFileName == null)
+			{
+				Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog
+				{
+					Filter = "C++ file (*.cpp)|*.cpp|C# file (*.cs)|*.cs|C file (*.c)|*.c|C header file (*.h)|*.h|Text file (*.txt)|*.txt",
+					FileName = "Untitled",
+					DefaultExt = ".cpp"
+				};
 
-        private void ExitApp(object sender, EventArgs e)
-        {
-            this.Close();
-        }
+				if (dlg.ShowDialog() ?? false)
+				{
+					currentFileName = dlg.FileName;
+				}
+				else
+				{
+					return;
+				}
+			}
+			textEditor.Save(currentFileName);
+		}
 
-        private void OpenSettingsMenu(object sender, EventArgs e)
-        {
-            this.Show();
-        }
+		void OnLostKeyboardFocus(object sender, EventArgs e)
+		{
+			if (Recogniser.recognising)
+				Recogniser.StopRecognition();
+		}
 
-        private void HideToTray(object sender, EventArgs e)
-        {
-            this.Hide();
-        }
-    }
+		public void OnToggleRecognition(object sender, RoutedEventArgs e)
+		{
+			if (Recogniser.recognising)
+			{
+				Recogniser.StopRecognition();
+			}
+			else
+			{
+				Recogniser.StartRecognition(false);
+			}
+		}
+
+		private void OnExitEvent(object sender, CancelEventArgs e)
+		{
+			Recogniser.StopRecognition();
+			System.Windows.Forms.DialogResult rslt = System.Windows.Forms.MessageBox.Show("Do you really want to close Voice Coding", "Exit", MessageBoxButtons.YesNo);
+			if (rslt == System.Windows.Forms.DialogResult.Yes)
+			{
+				e.Cancel = false;
+			}
+			else
+			{
+				e.Cancel = true;
+			}
+		}
+	}
 }
