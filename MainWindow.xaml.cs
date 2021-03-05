@@ -1,137 +1,108 @@
-﻿#define Notify
-//#define debug
-
-using System;
-using System.ComponentModel;
+﻿using System;
+using System.IO;
 using System.Windows;
-using Voice_Coding.src;
 using System.Windows.Input;
-using System.Xml;
+using System.Windows.Forms;
+using System.ComponentModel;
+using Voice_Coding.Source;
+
+using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Folding;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Search;
+using Microsoft.Win32;
 
 namespace Voice_Coding
 {
-    public partial class MainWindow : Window
-    {
-        private readonly CodeRecognition rec;
+	/// <summary>
+	/// Interaction logic for MainWindow.xaml
+	/// </summary>
+	///
+	public partial class MainWindow : Window
+	{
+		private readonly CodeRecognition Recogniser;
 
-#if Notify
-        //Tray icon
-        private readonly TrayIcon notifyIcon;
-#endif
+		public MainWindow()
+		{
+			InitializeComponent();
+			Recogniser = new CodeRecognition(this);
+			Recogniser.StartRecognition(false);
 
-        public MainWindow()
-        {
-            InitializeComponent();
-            //Set window to the bottom right corner
-            Left = SystemParameters.WorkArea.Width - Width - 10;
-            Top = SystemParameters.WorkArea.Height - Height - 10;
+			//textEditor.GotKeyboardFocus += new KeyboardFocusChangedEventHandler(OnGotKeyboardFocus);
+			textEditor.LostKeyboardFocus += new KeyboardFocusChangedEventHandler(OnLostKeyboardFocus);
+			this.Closing += new CancelEventHandler(OnExitEvent);
+		}
 
-            rec = new CodeRecognition();
-            rec.StartRecognition(false);
-            rec.ExitEvent += new EventHandler(ExitApp);
+		string currentFileName;
 
-#if Notify
-            notifyIcon = new TrayIcon();
-            notifyIcon.SettingClicked += new EventHandler(OpenSettingsMenu);
-            notifyIcon.ExitCommand += new EventHandler(ExitApp);
-#endif
-            this.Closing += new CancelEventHandler(ClosingWindow);
+		void OpenFileClick(object sender, RoutedEventArgs e)
+		{
+			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog
+			{
+				CheckFileExists = true
+			};
 
-            XmlDocument doc = new XmlDocument();
-#if debug
-            doc.Load(@"..\..\res\MainResource.xml");
-#else
-            doc.Load(@"Resources\MainResource.xml");
-#endif
+			if (dlg.ShowDialog() ?? false)
+			{
+				currentFileName = dlg.FileName;
+				textEditor.Load(currentFileName);
+				textEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinitionByExtension(Path.GetExtension(currentFileName));
+			}
+		}
 
-            XmlNodeList nodes = doc.GetElementsByTagName("HeaderFiles");
+		void SaveFileClick(object sender, EventArgs e)
+		{
+			if (currentFileName == null)
+			{
+				Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog
+				{
+					Filter = "C++ file (*.cpp)|*.cpp|C# file (*.cs)|*.cs|C file (*.c)|*.c|C header file (*.h)|*.h|Text file (*.txt)|*.txt",
+					FileName = "Untitled",
+					DefaultExt = ".cpp"
+				};
 
-            foreach(XmlNode node in nodes)
-            {
-                if(node.Attributes["type"].Value == "custom")
-                {
-                    IncluedPath.Text = node.Attributes["value"].Value;
-                    break;
-                }
-            }
+				if (dlg.ShowDialog() ?? false)
+				{
+					currentFileName = dlg.FileName;
+				}
+				else
+				{
+					return;
+				}
+			}
+			textEditor.Save(currentFileName);
+		}
 
-            IncluedPath.KeyUp += new KeyEventHandler(OnKeyUp);
+		void OnLostKeyboardFocus(object sender, EventArgs e)
+		{
+			if (Recogniser.recognising)
+				Recogniser.StopRecognition();
+		}
 
-            ReloadBtn.Click += new RoutedEventHandler(OnReloadClick);
-        }
+		public void OnToggleRecognition(object sender, RoutedEventArgs e)
+		{
+			if (Recogniser.recognising)
+			{
+				Recogniser.StopRecognition();
+			}
+			else
+			{
+				Recogniser.StartRecognition(false);
+			}
+		}
 
-        private void ClosingWindow(object sender, CancelEventArgs e)
-        {
-#if Notify
-            notifyIcon.Dispose();
-#endif
-            rec.Close();
-        }
-
-        private void ExitApp(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void OpenSettingsMenu(object sender, EventArgs e)
-        {
-            this.Show();
-        }
-
-        private void HideToTray(object sender, EventArgs e)
-        {
-            this.Hide();
-        }
-
-        private void OnKeyUp(object sender, KeyEventArgs key)
-        {
-            if (key.Key == Key.Enter)
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(DataResource.MainResource);
-
-                XmlNodeList nodes = doc.GetElementsByTagName("HeaderFiles");
-
-                foreach(XmlNode node in nodes)
-                {
-                    if (node.Attributes["type"].Value.Equals("custom"))
-                    {
-                        node.Attributes["value"].Value = IncluedPath.Text;
-                        Console.WriteLine("Changed text:" + IncluedPath.Text);
-                        break;
-                    }
-                }
-#if debug
-                doc.Save(@"..\..\res\MainResource.xml");
-#else
-                doc.Save(@"Resources\MainResource.xml");
-#endif
-                rec.ReloadGrammar();
-            }
-        }
-
-        private void OnReloadClick(object sender, EventArgs e)
-        {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(@"..\..\res\MainResource.xml");
-
-            XmlNodeList nodes = doc.GetElementsByTagName("HeaderFiles");
-
-            foreach (XmlNode node in nodes)
-            {
-                if (node.Attributes["type"].Value.Equals("custom"))
-                {
-                    node.Attributes["value"].Value = IncluedPath.Text;
-                    Console.WriteLine("Changed text:" + IncluedPath.Text);
-                    break;
-                }
-            }
-#if debug
-            doc.Save(@"..\..\res\MainResource.xml");
-#else
-            doc.Save(@"Resources\MainResource.xml");
-#endif
-            rec.ReloadGrammar();
-        }
-    }
+		private void OnExitEvent(object sender, CancelEventArgs e)
+		{
+			Recogniser.StopRecognition();
+			System.Windows.Forms.DialogResult rslt = System.Windows.Forms.MessageBox.Show("Do you really want to close Voice Coding", "Exit", MessageBoxButtons.YesNo);
+			if (rslt == System.Windows.Forms.DialogResult.Yes)
+			{
+				e.Cancel = false;
+			}
+			else
+			{
+				e.Cancel = true;
+			}
+		}
+	}
 }
