@@ -30,6 +30,7 @@ namespace Voice_Coding
 
 			//textEditor.GotKeyboardFocus += new KeyboardFocusChangedEventHandler(OnGotKeyboardFocus);
 			textEditor.LostKeyboardFocus += new KeyboardFocusChangedEventHandler(OnLostKeyboardFocus);
+			textEditor.TextArea.Caret.Location = new ICSharpCode.AvalonEdit.Document.TextLocation(1, 1);
 			this.Closing += new CancelEventHandler(OnExitEvent);
 		}
 

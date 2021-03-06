@@ -20,6 +20,7 @@
   <PrintValue name="string" value="cout ;" />
   <Commands>
     <Command name="Hello" value="hello" />
+    <Command name="Now" value="now" />
     <Command name="Up" value="up" />
     <Command name="Down" value="down" />
     <Command name="Left" value="left" />

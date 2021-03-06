@@ -22,10 +22,11 @@ namespace Voice_Coding.Source
 {
     struct cLocation
     {
-        public cLocation(int l, int c)
+        public cLocation(int l, int c, int o)
         {
             Line = l;
             Column = c;
+            Offset = o;
         }
         public int Line
         {
@@ -33,6 +34,11 @@ namespace Voice_Coding.Source
             set;
         }
         public int Column
+        {
+            get;
+            set;
+        }
+        public int Offset
         {
             get;
             set;
@@ -46,7 +52,8 @@ namespace Voice_Coding.Source
     {
         Header,
         Class,
-        Global
+        Global,
+        Local
     }
 
     class CodeRecognition
@@ -72,15 +79,16 @@ namespace Voice_Coding.Source
             ///iPointer[2] -> Global function pointer
             ///</summery>
             ///
-            iPointer = new int[3];
+            iPointer = new int[4];
             iPointer[0] = 0;
             iPointer[1] = 0;
             iPointer[2] = 0;
 
-            location = new cLocation[3] {
-                new cLocation(0, 0),
-                new cLocation(0, 0),
-                new cLocation(0, 0)
+            location = new cLocation[4] {
+                new cLocation(1, 1, 0),
+                new cLocation(1, 1, 0),
+                new cLocation(1, 1, 0),
+                new cLocation(1, 1, 0)
             };
 
             XmlDocument doc = new XmlDocument();
@@ -126,6 +134,8 @@ namespace Voice_Coding.Source
             string[] words = e.Result.Text.Split(' ');
             string DictionaryValue = "<NOT SETED>", DictionaryKey = "<NOT SETED>";
 
+            Section tempSection = 0;
+
             int length = window.textEditor.Text.Length;
 
             cLocation returnLocatioin = new cLocation();
@@ -142,23 +152,25 @@ namespace Voice_Coding.Source
 
             //statusBar.ChangeText($"{e.Result.Text} [{e.Result.Confidence}] [{e.Result.Grammar.Name}]");
 
+            //Console.WriteLine("Caret.Location: " + window.textEditor.TextArea.Caret.Location.Line + ", " + window.textEditor.TextArea.Caret.Location.Column);
             switch (words[0])
             {
+                case "now":
+                    Console.WriteLine("Caret.Location: " + window.textEditor.TextArea.Caret.Location.Line + "," + window.textEditor.TextArea.Caret.Location.Column + "," + window.textEditor.TextArea.Caret.Offset);
+                    break;
+
                 //INCLUDE "file_name"  2
                 case "include":
-                    //Console.WriteLine("O:"+window.textEditor.TextArea.Caret.Offset+ " L:"+ window.textEditor.TextArea.Caret.Line + " C:" + window.textEditor.TextArea.Caret.Column);
-                    //window.textEditor.TextArea.Caret.Location = location[(int)Section.Header].ToTextLocation();
-                    window.textEditor.Text = window.textEditor.Text.Insert(location[(int)Section.Header].Line, "#include<" + words[1] + ">" + ";\n");
-                    location[(int)Section.Header].Line += 1;
                     window.textEditor.TextArea.Caret.Location = location[(int)Section.Header].ToTextLocation();
+                    window.textEditor.Text = window.textEditor.Text.Insert(/*Offseet*/window.textEditor.CaretOffset, "#include<" + words[1] + ">" + ";\n");
+                    OperationOn(Section.Header);
                     break;
 
                 //USING_NAMESPACE "name_of_namespace"  2
                 case "using_namespace":
-                    window.textEditor.Text = window.textEditor.Text.Insert(1,"s");
-                        //window.textEditor.AppendText("using namespace " + FindInDictionary(words[1]) + ";\n");
-                    location[(int)Section.Header].Line += 1;
                     window.textEditor.TextArea.Caret.Location = location[(int)Section.Header].ToTextLocation();
+                    window.textEditor.Text = window.textEditor.Text.Insert(window.textEditor.CaretOffset,"using namespace " + FindInDictionary(words[1]) + ";\n");
+                    OperationOn(Section.Header);
                     break;
 
                 //FUNCTION "data_type" "Function_name" 3
@@ -170,6 +182,8 @@ namespace Voice_Coding.Source
                     window.textEditor.AppendText("\n}");
 
                     window.textEditor.CaretOffset = carr;
+
+                    OperationOn(Section.Global);
                     break;
 
                 //PRINT_LINE STRING/VAR "data_to_be_printed"  3+
@@ -243,6 +257,10 @@ namespace Voice_Coding.Source
                     break;
             }
 
+            //location[(int)tempSection].Line += 1;
+            //window.textEditor.TextArea.Caret.Location = location[(int)tempSection].ToTextLocation();
+            //Console.WriteLine("cLocation: " + location[(int)tempSection].Line + ", " + location[(int)tempSection].Column);
+
             window.status.Content = words[0];
         }
 
@@ -252,6 +270,25 @@ namespace Voice_Coding.Source
         }
 
         #region Private function
+
+        private void OperationOn(Section section)
+        {
+            switch (section)
+            {
+                case Section.Header:
+                    location[(int)section].Line += 1;
+                    window.textEditor.TextArea.Caret.Location = location[(int)section].ToTextLocation();
+                    break;
+                case Section.Class:
+                    location[(int)section].Line += 1;
+                    window.textEditor.TextArea.Caret.Location = location[(int)section].ToTextLocation();
+                    break;
+                case Section.Global:
+                    location[(int)section].Line += 1;
+                    window.textEditor.TextArea.Caret.Location = location[(int)section].ToTextLocation();
+                    break;
+            }
+        }
 
         private void Rec_Detected(object sender, SpeechDetectedEventArgs e)
         {
