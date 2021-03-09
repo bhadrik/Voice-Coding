@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Forms;
 using System.ComponentModel;
 using Voice_Coding.Source;
+using System.Windows.Media;
 
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Folding;
@@ -105,5 +106,28 @@ namespace Voice_Coding
 				e.Cancel = true;
 			}
 		}
-	}
+
+		private void OnExitButtonClick(object sender, RoutedEventArgs e)
+        {
+			this.Close();
+        }
+
+        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+				DragMove();
+            }
+        }
+
+        private void Button_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+			CloseBtn.Background = new SolidColorBrush(Color.FromArgb(255, 76, 76, 76));
+        }
+
+        private void CloseBtn_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+			CloseBtn.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+        }
+    }
 }

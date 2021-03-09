@@ -189,9 +189,9 @@ namespace Voice_Coding.Source
                 //PRINT_LINE STRING/VAR "data_to_be_printed"  3+
                 case "print_line":
                     if (words[1] == "string")
-                        window.status.Content = words[0];
+                        window.status.Text = words[0];
                     else
-                        window.status.Content = words[0];
+                        window.status.Text = words[0];
                     break;
 
                 //PRINT STRING/VAR "data_to_be_printed" 3+
@@ -199,7 +199,7 @@ namespace Voice_Coding.Source
                     if (words[1] == "string")
                         window.textEditor.AppendText("cout<<\"\"<<");
                     else
-                        window.status.Content = words[0];
+                        window.status.Text = words[0];
                     break;
 
                 case "undo":
@@ -212,7 +212,7 @@ namespace Voice_Coding.Source
                     break;
 
                 case "erase":
-                    window.status.Content = "-No idea what to do-";
+                    window.status.Text = "-No idea what to do-";
                     break;
 
                 case "clear":
@@ -261,7 +261,7 @@ namespace Voice_Coding.Source
             //window.textEditor.TextArea.Caret.Location = location[(int)tempSection].ToTextLocation();
             //Console.WriteLine("cLocation: " + location[(int)tempSection].Line + ", " + location[(int)tempSection].Column);
 
-            window.status.Content = words[0];
+            window.status.Text = words[0];
         }
 
         protected virtual void OnExitEvent()
@@ -362,7 +362,7 @@ namespace Voice_Coding.Source
                 recognising = true;
                 rec.RecognizeAsync(RecognizeMode.Multiple);
                 window.ToggelButton.Background = new SolidColorBrush(Color.FromArgb(255, 64, 192, 117));
-                window.status.Content = "Listening...";
+                window.status.Text = "Listening...";
             }
         }
 
@@ -374,7 +374,7 @@ namespace Voice_Coding.Source
                 rec.RecognizeAsyncCancel();
                 recognising = false;
                 window.ToggelButton.Background = new SolidColorBrush(Color.FromArgb(255, 121, 121, 121));
-                window.status.Content = "Stop";
+                window.status.Text = "Stop";
             }
         }
 
