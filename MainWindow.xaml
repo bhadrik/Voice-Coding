@@ -81,7 +81,7 @@
                     </CheckBox>
                 </ToolBar>
             </ToolBarTray>
-            <Button x:Name="CloseBtn" Margin="3" MouseEnter="Button_MouseEnter" MouseLeave="CloseBtn_MouseLeave" Click="OnExitButtonClick" Grid.Column="1" Background="#FF4C4C4C" Foreground="Silver" BorderBrush="{x:Null}">
+            <Button x:Name="CloseBtn" Margin="3" MouseEnter="Button_MouseEnter" MouseLeave="CloseBtn_MouseLeave" Click="OnExitButtonClick" Grid.Column="1" Background="#004C4C4C" Foreground="Silver" BorderBrush="{x:Null}">
                 <Button.Content>
                     X
                 </Button.Content>
