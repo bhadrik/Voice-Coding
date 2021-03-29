@@ -32,7 +32,7 @@ namespace Voice_Coding.Source
         {
             dictionary = new Dictionary<string, string>();
 
-            Builder = new GrammarBuilder[5];
+            Builder = new GrammarBuilder[6];
 
             //Include builder
             Builder[0] = new GrammarBuilder();
@@ -61,6 +61,12 @@ namespace Voice_Coding.Source
             Builder[4].Append("add");
             Builder[4].Append(GetChoice(Attribute.Datatype));
             Builder[4].AppendDictation();
+
+            //Main function special
+            Builder[5] = new GrammarBuilder();
+            Builder[5].Append("function");
+            Builder[5].Append(GetChoice(Attribute.Datatype));
+            Builder[5].Append(new Choices(new string[] { "main" }));
 
             AllRules = new Choices(Builder);
         }

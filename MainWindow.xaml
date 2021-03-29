@@ -11,13 +11,15 @@
     <DockPanel>
         <Grid DockPanel.Dock="Top" Background="#333" MouseDown="Grid_MouseDown">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="40"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition MinHeight="30" Height="30"></RowDefinition>
             </Grid.RowDefinitions>
-            <ToolBarTray Margin="10,0,0,0" Background="Transparent" Grid.Column="0" IsLocked="True" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <Image Height="20" Grid.Column="0" Source="Resource/Icon/Voice Coding/32.png"></Image>
+            <ToolBarTray Margin="5,0,0,0" Background="Transparent" Grid.Column="1" IsLocked="True" HorizontalAlignment="Left" VerticalAlignment="Center">
                 <ToolBar>
                     <ToolBar.Style>
                         <Style TargetType="ToolBar">
@@ -81,7 +83,7 @@
                     </CheckBox>
                 </ToolBar>
             </ToolBarTray>
-            <Button x:Name="CloseBtn" Margin="3" MouseEnter="Button_MouseEnter" MouseLeave="CloseBtn_MouseLeave" Click="OnExitButtonClick" Grid.Column="1" Background="#004C4C4C" Foreground="Silver" BorderBrush="{x:Null}">
+            <Button x:Name="CloseBtn" Margin="3" MouseEnter="Button_MouseEnter" MouseLeave="CloseBtn_MouseLeave" Click="OnExitButtonClick" Grid.Column="2" Background="#004C4C4C" Foreground="Silver" BorderBrush="{x:Null}">
                 <Button.Content>
                     X
                 </Button.Content>
@@ -97,8 +99,8 @@
                     <avalonEdit:TextEditor
 				    Name="textEditor"
 				    FontFamily="Consolas"
-				    FontSize="10pt"
-				    SyntaxHighlighting="C++"
+				    FontSize="20pt"
+				    SyntaxHighlighting="Java"
                     ShowLineNumbers="True">
                     </avalonEdit:TextEditor>
                 </Border>
