@@ -171,6 +171,7 @@ namespace Voice_Coding.Source
                     //OperationOn(Section.Header);
                     break;
 
+
                 //USING_NAMESPACE "name_of_namespace"  2
                 case "using_namespace":
                     //window.textEditor.TextArea.Caret.Location = location[(int)Section.Header].ToTextLocation();
