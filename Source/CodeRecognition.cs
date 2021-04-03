@@ -180,15 +180,17 @@ namespace Voice_Coding.Source
 
                 //FUNCTION "data_type" "Function_name" 3
                 case "function":
-                    window.textEditor.AppendText(FindInDictionary(words[1]) + " " + words[2] + "(){\n\t");
+                    window.textEditor.Text = window.textEditor.Text.Insert(window.textEditor.TextArea.Caret.Offset, FindInDictionary(words[1]) + " " + words[2] + "(){\r\t");
 
-                    int carr = window.textEditor.CaretOffset;
+                    int carr = window.textEditor.TextArea.Caret.Offset;
+                    Console.WriteLine("SET_________________________>:" + carr);
 
                     window.textEditor.AppendText("\n}");
 
-                    window.textEditor.CaretOffset = carr;
+                    window.textEditor.TextArea.Caret.Offset = carr;
+                    Console.WriteLine("SET_________________________>:" + window.textEditor.TextArea.Caret.Offset);
 
-                    OperationOn(Section.Global);
+                    //OperationOn(Section.Global);
 
                     break;
 
