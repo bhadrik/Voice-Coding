@@ -13,8 +13,9 @@ It will automatically start listening so open up any text editor like Notepad et
 | include <file name>  | ex. say: "inclued  iostream" |
 | using namespace <namespac name> | ex. say: "using namespace standard/std" |
 | function <data type> <name>  | ex. say: "function void main"  |
-| print <string/variable> <data> | ex. say: "print string Something string" |
-| print line <string/variable> <data> | ex. say: "print line variable num" |
+| print <string/variable> | ex. say: "print string" |
+| print line <string/variable> | ex. say: "print line variable" |
+| for loop | ex. say: "for loop" |
 | hello | Check listening |
 | up, down, left, right | Move cursor according command |
 | newline | Similar to press ENTER key in keybord |
