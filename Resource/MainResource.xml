@@ -15,10 +15,11 @@
   </Datatypes>
   <PrintStyle name="print_line" value="pirnt_line" />
   <PrintStyle name="print" value="pirnt" />
-  <PrintValue name="var" value="cout endl;" />
-  <PrintValue name="variable" value="cout  endl;" />
-  <PrintValue name="string" value="cout ;" />
+  <PrintValue name="var" value="var" />
+  <PrintValue name="variable" value="var" />
+  <PrintValue name="string" value="string" />
   <Commands>
+    <Command name="For Loop" value="for_loop" />
     <Command name="Hello" value="hello" />
     <Command name="Now" value="now" />
     <Command name="Undo" value="undo"/>

@@ -2,6 +2,8 @@
 
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Editing;
+using ICSharpCode.AvalonEdit.Snippets;
 using System;
 using System.Globalization;
 using System.Speech.Recognition;
@@ -240,56 +242,41 @@ namespace Voice_Coding.Source
                 //PRINT_LINE STRING/VAR "data_to_be_printed"
                 //cout<<word[0]+word[1]...world[n]<<endl;
                 case "print_line":
-                    if (words[1] == "string")
-                    {
-                        str.Append("cout<<\"");
-                        window.textEditor.Document.Insert(Caret.Offset, str.ToString());
-                        temp = Caret.Offset;
+                    str.Append("cout<<");
+                    window.textEditor.Document.BeginUpdate();
+                    window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                    temp = Caret.Offset;
 
-                        str.Clear();
-                        str.Append("\"<<endl;");
-                        window.textEditor.Document.Insert(Caret.Offset, str.ToString());
-                        Caret.Offset = temp;
-                    }
-                    else if(words[1] == "variable")
-                    {
-                        str.Append("cout<<");
-                        window.textEditor.Document.Insert(Caret.Offset, str.ToString());
-                        temp = Caret.Offset;
+                    str.Clear();
+                    str.Append("<<endl;");
+                    window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                    window.textEditor.Document.EndUpdate();
+                    Caret.Offset = temp;
+                    break;
 
-                        str.Clear();
-                        str.Append("<<endl;");
-                        window.textEditor.Document.Insert(Caret.Offset, str.ToString());
-                        Caret.Offset = temp;
+                case "add":
+                    str.Append(FindInDictionary(words[1])+" "+words[2]+";\r\n");
+                    window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                    /*temp = Caret.Offset;
+                    str.Clear();
 
-                    }
+                    str.Append(";");
+                    window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                    Caret.Offset = temp;*/
                     break;
 
                 //PRINT STRING/VAR "data_to_be_printed" 3+
                 case "print":
-                    if (words[1] == "string")
-                    {
-                        str.Append("cout<<\"");
+                    str.Append("cout<<");
+                    window.textEditor.Document.BeginUpdate();
+                    window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                    temp = Caret.Offset;
 
-                        for (int i = 2; i < words.Length; i++)
-                        {
-                            str.Append(words[i] + " ");
-                        }
-
-                        str.Append("\";");
-
-                        Code.Text = Code.Text.Insert(Caret.Offset, str.ToString());
-
-                        Caret.Offset = Code.Text.Length;
-                    }
-                    else if (words[1] == "variable")
-                    {
-                        str.Append("cout<<" + words[2] + ";");
-
-                        Code.Text = Code.Text.Insert(Caret.Offset, str.ToString());
-
-                        Caret.Offset = Code.Text.Length;
-                    }
+                    str.Clear();
+                    str.Append(";");
+                    window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                    window.textEditor.Document.EndUpdate();
+                    Caret.Offset = temp;
                     break;
 
                 case "undo":
@@ -302,7 +289,7 @@ namespace Voice_Coding.Source
                     break;
 
                 case "erase":
-                    window.status.Text = "-No idea what to do-";
+                    window.status.Text = "<NEED TO BE IMPLEMENTED>";
                     break;
 
                 case "clear":
@@ -330,8 +317,7 @@ namespace Voice_Coding.Source
                     break;
 
                 case "newline":
-                    Code.Text = Code.Text.Insert(Caret.Offset,"\n");
-                    window.textEditor.TextArea.Caret.Line += 1;
+                    window.textEditor.Document.Insert(Caret.Offset,"\r\n");
                     break;
 
                 case "tab":
