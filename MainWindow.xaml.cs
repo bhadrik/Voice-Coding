@@ -5,12 +5,9 @@ using System.Windows.Input;
 using System.Windows.Forms;
 using System.ComponentModel;
 using Voice_Coding.Source;
+using System.Windows.Media;
 
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Search;
-using Microsoft.Win32;
 
 namespace Voice_Coding
 {
@@ -27,15 +24,38 @@ namespace Voice_Coding
 			InitializeComponent();
 			Recogniser = new CodeRecognition(this);
 			Recogniser.StartRecognition(false);
+			//Recogniser.Identified += new EventHandler<IdentifiedArgs>(IdentifiedOK);
 
-			//textEditor.GotKeyboardFocus += new KeyboardFocusChangedEventHandler(OnGotKeyboardFocus);
 			textEditor.LostKeyboardFocus += new KeyboardFocusChangedEventHandler(OnLostKeyboardFocus);
+			textEditor.TextArea.Caret.Location = new ICSharpCode.AvalonEdit.Document.TextLocation(1, 1);
 			this.Closing += new CancelEventHandler(OnExitEvent);
 		}
 
-		string currentFileName;
+        /*private void IdentifiedOK(object sender, IdentifiedArgs e)
+        {
+			textEditor.Document.BeginUpdate();
+			textEditor.Document.Insert(textEditor.CaretOffset, e.Text);
+			textEditor.Document.EndUpdate();
+			textEditor.CaretOffset = e.Offset;
+        }*/
 
-		void OpenFileClick(object sender, RoutedEventArgs e)
+
+        string currentFileName;
+
+        public void OnToggleRecognition(object sender, RoutedEventArgs e)
+		{
+			if (Recogniser.recognising)
+			{
+				Recogniser.StopRecognition();
+			}
+			else
+			{
+				Recogniser.StartRecognition(false);
+			}
+		}
+
+        #region Private
+        private void OpenFileClick(object sender, RoutedEventArgs e)
 		{
 			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog
 			{
@@ -50,7 +70,7 @@ namespace Voice_Coding
 			}
 		}
 
-		void SaveFileClick(object sender, EventArgs e)
+		private void SaveFileClick(object sender, EventArgs e)
 		{
 			if (currentFileName == null)
 			{
@@ -73,23 +93,12 @@ namespace Voice_Coding
 			textEditor.Save(currentFileName);
 		}
 
-		void OnLostKeyboardFocus(object sender, EventArgs e)
+		private void OnLostKeyboardFocus(object sender, EventArgs e)
 		{
 			if (Recogniser.recognising)
 				Recogniser.StopRecognition();
 		}
 
-		public void OnToggleRecognition(object sender, RoutedEventArgs e)
-		{
-			if (Recogniser.recognising)
-			{
-				Recogniser.StopRecognition();
-			}
-			else
-			{
-				Recogniser.StartRecognition(false);
-			}
-		}
 
 		private void OnExitEvent(object sender, CancelEventArgs e)
 		{
@@ -104,5 +113,29 @@ namespace Voice_Coding
 				e.Cancel = true;
 			}
 		}
-	}
+
+		private void OnExitButtonClick(object sender, RoutedEventArgs e)
+        {
+			this.Close();
+        }
+
+        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+				DragMove();
+            }
+        }
+
+        private void Button_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+			CloseBtn.Background = new SolidColorBrush(Color.FromArgb(255, 76, 76, 76));
+        }
+
+        private void CloseBtn_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+			CloseBtn.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+        }
+        #endregion
+    }
 }

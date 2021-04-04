@@ -5,77 +5,119 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:local="clr-namespace:Voice_Coding"
-        mc:Ignorable="d"
         
-        Title="Voice Coding" Height="450" Width="800" Icon="Resource/Icon/Voice Coding/32.png" FontFamily="PT Sans">
+        Title="Voice Coding" Height="450" Width="800" Icon="Resource/Icon/Voice Coding/32.png" FontFamily="PT Sans" WindowStyle="None">
 
     <DockPanel>
-        <ToolBar DockPanel.Dock="Top">
-            <ToolBar.Resources>
-                <Style TargetType="{x:Type Image}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ButtonBase}, AncestorLevel=1}, Path=IsEnabled}" Value="False">
-                            <Setter Property="Opacity" Value="0.30" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ToolBar.Resources>
-            <Button Click="OpenFileClick">
-                <Image Source="Resource/Icon/Open.png" Height="16"/>
+        <Grid DockPanel.Dock="Top" Background="#333" MouseDown="Grid_MouseDown">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="40"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition MinHeight="30" Height="30"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Image Height="20" Grid.Column="0" Source="Resource/Icon/Voice Coding/32.png"></Image>
+            <ToolBarTray Margin="5,0,0,0" Background="Transparent" Grid.Column="1" IsLocked="True" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <ToolBar>
+                    <ToolBar.Style>
+                        <Style TargetType="ToolBar">
+                            <!-- Not Dropdown Button -->
+                            <Setter Property="ToolBarTray.IsLocked" Value="True"/>
+                            <!-- Not Overflow Button -->
+                            <Setter Property="OverflowMode" Value="Never"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ToolBar}">
+                                        <ToolBarPanel IsItemsHost="True" Background="Transparent"/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ToolBar.Style>
+                    <ToolBar.Resources>
+                        <Style TargetType="{x:Type Image}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ButtonBase}, AncestorLevel=1}, Path=IsEnabled}" Value="False">
+                                    <Setter Property="Opacity" Value="0.30" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToolBar.Resources>
+                    <Button Click="OpenFileClick">
+                        <Image Source="Resource/Icon/Open.png" Height="16"/>
+                    </Button>
+                    <Button Click="SaveFileClick">
+                        <Image Source="Resource/Icon/Save.png" Height="16"/>
+                    </Button>
+                    <Separator/>
+                    <Button Command="Cut">
+                        <Image Source="Resource/Icon/Cut.png" Height="16"/>
+                    </Button>
+                    <Button Command="Copy">
+                        <Image Source="Resource/Icon/Copy.png" Height="16"/>
+                    </Button>
+                    <Button Command="Paste">
+                        <Image Source="Resource/Icon/Past.png" Height="16"/>
+                    </Button>
+                    <Button Command="Delete">
+                        <Image Source="Resource/Icon/Delet.png" Height="16"/>
+                    </Button>
+                    <Separator/>
+                    <Button Command="Undo">
+                        <Image Source="Resource/Icon/Undo.png" Height="16"/>
+                    </Button>
+                    <Button Command="Redo">
+                        <Image Source="Resource/Icon/Redo.png" Height="16"/>
+                    </Button>
+                    <Separator/>
+                    <CheckBox IsChecked="{Binding ElementName=textEditor,Path=WordWrap}">
+                        <Image Source="Resource/Icon/Wrap.png" Height="16"/>
+                    </CheckBox>
+                    <CheckBox IsChecked="{Binding ElementName=textEditor,Path=ShowLineNumbers}">
+                        <TextBlock Width="16" TextAlignment="Center">#</TextBlock>
+                    </CheckBox>
+                    <CheckBox IsChecked="{Binding ElementName=textEditor,Path=Options.ShowEndOfLine}">
+                        <TextBlock Width="16" TextAlignment="Center">¶</TextBlock>
+                    </CheckBox>
+                </ToolBar>
+            </ToolBarTray>
+            <Button x:Name="CloseBtn" Margin="3" MouseEnter="Button_MouseEnter" MouseLeave="CloseBtn_MouseLeave" Click="OnExitButtonClick" Grid.Column="2" Background="#004C4C4C" Foreground="Silver" BorderBrush="{x:Null}">
+                <Button.Content>
+                    X
+                </Button.Content>
             </Button>
-            <Button Click="SaveFileClick">
-                <Image Source="Resource/Icon/Save.png" Height="16"/>
-            </Button>
-            <Separator/>
-            <Button Command="Cut">
-                <Image Source="Resource/Icon/Cut.png" Height="16"/>
-            </Button>
-            <Button Command="Copy">
-                <Image Source="Resource/Icon/Copy.png" Height="16"/>
-            </Button>
-            <Button Command="Paste">
-                <Image Source="Resource/Icon/Past.png" Height="16"/>
-            </Button>
-            <Button Command="Delete">
-                <Image Source="Resource/Icon/Delet.png" Height="16"/>
-            </Button>
-            <Separator/>
-            <Button Command="Undo">
-                <Image Source="Resource/Icon/Undo.png" Height="16"/>
-            </Button>
-            <Button Command="Redo">
-                <Image Source="Resource/Icon/Redo.png" Height="16"/>
-            </Button>
-            <Separator/>
-            <CheckBox IsChecked="{Binding ElementName=textEditor,Path=WordWrap}">
-                <Image Source="Resource/Icon/New/Wrap.png" Height="16"/>
-            </CheckBox>
-            <CheckBox IsChecked="{Binding ElementName=textEditor,Path=ShowLineNumbers}">
-                <TextBlock Width="16" TextAlignment="Center">#</TextBlock>
-            </CheckBox>
-            <CheckBox IsChecked="{Binding ElementName=textEditor,Path=Options.ShowEndOfLine}">
-                <TextBlock Width="16" TextAlignment="Center">¶</TextBlock>
-            </CheckBox>
-        </ToolBar>
+        </Grid>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="27"/>
+                <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <avalonEdit:TextEditor
+                <Border BorderBrush="#FF333333" BorderThickness="3,0,3,2">
+                    <avalonEdit:TextEditor
 				    Name="textEditor"
 				    FontFamily="Consolas"
-				    FontSize="10pt"
-				    SyntaxHighlighting="C++"
+				    FontSize="20pt"
+				    SyntaxHighlighting="Java"
                     ShowLineNumbers="True">
-                    <!--Welcome to AvalonEdit!-->
-                </avalonEdit:TextEditor>
+                    </avalonEdit:TextEditor>
+                </Border>
             </Grid>
-            <Grid Grid.Row="1" Background="#FF373737">
-                <Button x:Name="ToggelButton" Content=""  HorizontalAlignment="Left"  VerticalAlignment="Center" Width="27" UseLayoutRounding="False" Height="27.067" BorderBrush="#FF373737" BorderThickness="3" Click="OnToggleRecognition" Background="#FF40C075"/>
-                <Label x:Name="status" HorizontalAlignment="Left" Margin="27,0,0,-2.8" VerticalAlignment="Top" Foreground="#FFDFDFDF" Height="30" Width="743" FontSize="14" Content="Commands" Background="{x:Null}" FontFamily="Poppins"/>
-            </Grid>
+            <Border Grid.Row="1" BorderBrush="#FF333333" BorderThickness="3,0,3,3">
+                <Grid Grid.Row="1" Background="#d5f0f7">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="27"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Button Grid.Column="0" x:Name="ToggelButton" BorderBrush="#d5f0f7" BorderThickness="3" Click="OnToggleRecognition" Background="#FF40C075"/>
+                    <TextBlock Grid.Column="1" x:Name="status" Margin="10,0,0,0" Foreground="#FF83989D" FontSize="14" Text="Commands" Background="{x:Null}" FontFamily="Poppins" Padding="0,3,0,0"/>
+                </Grid>
+            </Border>
         </Grid>
     </DockPanel>
 </Window>
