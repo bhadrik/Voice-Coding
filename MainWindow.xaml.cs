@@ -7,11 +7,7 @@ using System.ComponentModel;
 using Voice_Coding.Source;
 using System.Windows.Media;
 
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Search;
-using Microsoft.Win32;
 
 namespace Voice_Coding
 {
@@ -28,16 +24,38 @@ namespace Voice_Coding
 			InitializeComponent();
 			Recogniser = new CodeRecognition(this);
 			Recogniser.StartRecognition(false);
+			//Recogniser.Identified += new EventHandler<IdentifiedArgs>(IdentifiedOK);
 
-			//textEditor.GotKeyboardFocus += new KeyboardFocusChangedEventHandler(OnGotKeyboardFocus);
 			textEditor.LostKeyboardFocus += new KeyboardFocusChangedEventHandler(OnLostKeyboardFocus);
 			textEditor.TextArea.Caret.Location = new ICSharpCode.AvalonEdit.Document.TextLocation(1, 1);
 			this.Closing += new CancelEventHandler(OnExitEvent);
 		}
 
-		string currentFileName;
+        /*private void IdentifiedOK(object sender, IdentifiedArgs e)
+        {
+			textEditor.Document.BeginUpdate();
+			textEditor.Document.Insert(textEditor.CaretOffset, e.Text);
+			textEditor.Document.EndUpdate();
+			textEditor.CaretOffset = e.Offset;
+        }*/
 
-		void OpenFileClick(object sender, RoutedEventArgs e)
+
+        string currentFileName;
+
+        public void OnToggleRecognition(object sender, RoutedEventArgs e)
+		{
+			if (Recogniser.recognising)
+			{
+				Recogniser.StopRecognition();
+			}
+			else
+			{
+				Recogniser.StartRecognition(false);
+			}
+		}
+
+        #region Private
+        private void OpenFileClick(object sender, RoutedEventArgs e)
 		{
 			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog
 			{
@@ -52,7 +70,7 @@ namespace Voice_Coding
 			}
 		}
 
-		void SaveFileClick(object sender, EventArgs e)
+		private void SaveFileClick(object sender, EventArgs e)
 		{
 			if (currentFileName == null)
 			{
@@ -75,23 +93,12 @@ namespace Voice_Coding
 			textEditor.Save(currentFileName);
 		}
 
-		void OnLostKeyboardFocus(object sender, EventArgs e)
+		private void OnLostKeyboardFocus(object sender, EventArgs e)
 		{
 			if (Recogniser.recognising)
 				Recogniser.StopRecognition();
 		}
 
-		public void OnToggleRecognition(object sender, RoutedEventArgs e)
-		{
-			if (Recogniser.recognising)
-			{
-				Recogniser.StopRecognition();
-			}
-			else
-			{
-				Recogniser.StartRecognition(false);
-			}
-		}
 
 		private void OnExitEvent(object sender, CancelEventArgs e)
 		{
@@ -129,5 +136,6 @@ namespace Voice_Coding
         {
 			CloseBtn.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
         }
+        #endregion
     }
 }

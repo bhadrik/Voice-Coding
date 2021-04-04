@@ -13,6 +13,33 @@ using System.Text;
 
 namespace Voice_Coding.Source
 {
+    public class IdentifiedArgs : EventArgs
+    {
+        private string text;
+        private int breakAtOffset;
+
+        public IdentifiedArgs(string arg, int breakHere)
+        {
+            text = arg;
+            breakAtOffset = breakHere;
+        }
+
+        public string Text
+        {
+            get
+            {
+                return text;
+            }
+        }
+
+        public int Offset
+        {
+            get
+            {
+                return breakAtOffset;
+            }
+        }
+    }
     struct cLocation
     {
         public cLocation(int l, int c, int o)
@@ -59,6 +86,9 @@ namespace Voice_Coding.Source
         private cLocation[] location;
         private TextEditor Code;
         private ICSharpCode.AvalonEdit.Editing.Caret Caret;
+
+        public EventHandler<IdentifiedArgs> Identified;
+
         #endregion
 
         public CodeRecognition(MainWindow window)
@@ -127,11 +157,10 @@ namespace Voice_Coding.Source
             string[] words = e.Result.Text.Split(' ');
             string DictionaryValue = "<NOT SETED>", DictionaryKey = "<NOT SETED>";
 
-            Section tempSection = 0;
-
             int length = window.textEditor.Text.Length;
 
             StringBuilder str = new StringBuilder();
+            int temp = 0;
 
             cLocation returnLocatioin = new cLocation();
             returnLocatioin.Line = window.textEditor.TextArea.Caret.Line;
@@ -171,30 +200,41 @@ namespace Voice_Coding.Source
 
                 //INCLUDE "file_name"  2
                 case "include":
-                    str.Append("#include<" + words[1] + ">" + ";\r");
+                    str.Append("#include<" + words[1] + ">" + ";\r\n");
                     Console.WriteLine(str.ToString());
-                    Code.AppendText(str.ToString());
-                    //Code.Text = Code.Text.Insert(Caret.Offset, str.ToString());
-                    Caret.Offset = Code.Text.Length;
+                    window.textEditor.Document.BeginUpdate();
+                    window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                    window.textEditor.Document.EndUpdate();
                     break;
 
                 //USING_NAMESPACE "name_of_namespace"  2
                 case "using_namespace":
-                    str.Append("using namespace " + FindInDictionary(words[1]) + ";\r");
-                    Code.Text = Code.Text.Insert(Caret.Offset, str.ToString());
-                    Caret.Offset = Code.Text.Length;
+                    str.Append("using namespace " + FindInDictionary(words[1]) + ";\r\n");
+                    window.textEditor.Document.BeginUpdate();
+                    window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                    window.textEditor.Document.EndUpdate();
+                    //Caret.Offset = Code.Text.Length;
                     break;
 
                 //FUNCTION "data_type" "Function_name" 3
                 case "function":
-                    str.Append(FindInDictionary(words[1]) + " " + words[2] + "(){\r\t");
-                    Code.Text = Code.Text.Insert(Caret.Offset, str.ToString());
-                    Caret.Offset = Code.Text.Length;
-                    int temp = Code.Text.Length;
+                    window.textEditor.Document.BeginUpdate();
+                    str.Append(FindInDictionary(words[1]) + " " + words[2] + "(){\r\n\t");
+                    window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                    temp = Caret.Offset;
+                    //Caret.Offset = Code.Text.Length;
                     str.Clear();
                     str.Append("\n}");
-                    Code.Text = Code.Text.Insert(Caret.Offset, str.ToString());
+                    window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                    window.textEditor.Document.EndUpdate();
                     Caret.Offset = temp;
+                    break;
+
+                case "for_loop":
+                    window.textEditor.Document.BeginUpdate();
+                    str.Append("for(int i=0; i<0; i++)\r\n{\r\n\t/*Body*/\r\n}");
+                    window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                    window.textEditor.Document.EndUpdate();
                     break;
 
                 //PRINT_LINE STRING/VAR "data_to_be_printed"
@@ -203,35 +243,53 @@ namespace Voice_Coding.Source
                     if (words[1] == "string")
                     {
                         str.Append("cout<<\"");
+                        window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                        temp = Caret.Offset;
 
-                        for(int i=2; i<words.Length; i++)
-                        {
-                            str.Append(words[i] + " ");
-                        }
-
+                        str.Clear();
                         str.Append("\"<<endl;");
-
-                        Code.Text = Code.Text.Insert(Caret.Offset, str.ToString());
-
-                        Caret.Offset = Code.Text.Length;
+                        window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                        Caret.Offset = temp;
                     }
                     else if(words[1] == "variable")
                     {
-                        str.Append("cout<<" + words[2] + "<<endl;");
+                        str.Append("cout<<");
+                        window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                        temp = Caret.Offset;
 
-                        Code.Text = Code.Text.Insert(Caret.Offset, str.ToString());
+                        str.Clear();
+                        str.Append("<<endl;");
+                        window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                        Caret.Offset = temp;
 
-                        Caret.Offset = Code.Text.Length;
                     }
-                        
                     break;
 
                 //PRINT STRING/VAR "data_to_be_printed" 3+
                 case "print":
                     if (words[1] == "string")
-                        window.textEditor.AppendText("cout<<\"\"<<");
-                    else
-                        window.status.Text = words[0];
+                    {
+                        str.Append("cout<<\"");
+
+                        for (int i = 2; i < words.Length; i++)
+                        {
+                            str.Append(words[i] + " ");
+                        }
+
+                        str.Append("\";");
+
+                        Code.Text = Code.Text.Insert(Caret.Offset, str.ToString());
+
+                        Caret.Offset = Code.Text.Length;
+                    }
+                    else if (words[1] == "variable")
+                    {
+                        str.Append("cout<<" + words[2] + ";");
+
+                        Code.Text = Code.Text.Insert(Caret.Offset, str.ToString());
+
+                        Caret.Offset = Code.Text.Length;
+                    }
                     break;
 
                 case "undo":
@@ -252,13 +310,13 @@ namespace Voice_Coding.Source
                     break;
 
                 case "left":
-                    if (window.textEditor.CaretOffset != 0)
-                        window.textEditor.CaretOffset -= 1;
+                    if (Caret.Offset != 0)
+                        Caret.Offset -= 1;
                     break;
 
                 case "right":
-                    if (window.textEditor.CaretOffset < window.textEditor.Text.Length)
-                        window.textEditor.CaretOffset += 1;
+                    if (Caret.Offset < Code.Text.Length)
+                        Caret.Offset += 1;
                     break;
 
                 case "up":
@@ -272,7 +330,7 @@ namespace Voice_Coding.Source
                     break;
 
                 case "newline":
-                    window.textEditor.Text = window.textEditor.Text.Insert(window.textEditor.CaretOffset, "\n");
+                    Code.Text = Code.Text.Insert(Caret.Offset,"\n");
                     window.textEditor.TextArea.Caret.Line += 1;
                     break;
 
