@@ -17,7 +17,7 @@ It will automatically start listening so open up any text editor like Notepad et
 | print line <string/variable> | ex. say: "print line variable" |
 | for loop | ex. say: "for loop" |
 | hello | Check listening |
-| up, down, left, right | Move cursor according command |
+| up, down, left, right | Move caret according command |
 | newline | Similar to press ENTER key in keybord |
 | tab | Similar to press TAB key in keybord |
 | undo | Ctrl+Z |
