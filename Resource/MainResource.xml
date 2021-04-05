@@ -20,6 +20,7 @@
   <PrintValue name="string" value="string" />
   <Commands>
     <Command name="For Loop" value="for_loop" />
+    <Command name="Class" value="class" />
     <Command name="Hello" value="hello" />
     <Command name="Now" value="now" />
     <Command name="Undo" value="undo"/>

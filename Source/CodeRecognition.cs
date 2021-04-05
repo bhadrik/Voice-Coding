@@ -202,7 +202,7 @@ namespace Voice_Coding.Source
 
                 //INCLUDE "file_name"  2
                 case "include":
-                    str.Append("#include<" + words[1] + ">" + ";\r\n");
+                    str.Append("#include<" + words[1] + ">" + "\r\n");
                     Console.WriteLine(str.ToString());
                     window.textEditor.Document.BeginUpdate();
                     window.textEditor.Document.Insert(Caret.Offset, str.ToString());
@@ -229,6 +229,17 @@ namespace Voice_Coding.Source
                     str.Append("\n}");
                     window.textEditor.Document.Insert(Caret.Offset, str.ToString());
                     window.textEditor.Document.EndUpdate();
+                    Caret.Offset = temp;
+                    break;
+
+                case "class":
+                    str.Append("class ");
+                    window.textEditor.Document.Insert(Caret.Offset, str.ToString());
+                    temp = Caret.Offset;
+
+                    str.Clear();
+                    str.Append("\r\n{\r\n\t\r\n};");
+                    window.textEditor.Document.Insert(Caret.Offset, str.ToString());
                     Caret.Offset = temp;
                     break;
 
